@@ -7,7 +7,7 @@
 int main(int argc, char* argv[])
 {
   const std::string ApplicationName = "kompresor";
-  const std::string ApplicationVersion = "0.0.0-alpka.0.1.0";
+  const std::string ApplicationVersion = "0.0.0-alpka.0.2.0";
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
   enum class Archive {ZIP};
   enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
