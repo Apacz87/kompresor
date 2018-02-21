@@ -15,19 +15,19 @@ int main(int argc, char* argv[])
   std::vector<std::string> input;
   std::string output;
   const std::string ApplicationName = "kompresor";
-  const std::string ApplicationVersion = "0.0.0-alpka.0.0.1";
+  const std::string ApplicationVersion = "0.0.0-alpka.0.1.0";
 
   auto compressionMode = (
     clipp::command("pack").set(selected, mode::compression).doc("data compression mode"),
     clipp::values("input file(s)", input),
     clipp::option("-z", "--zip").set(fileFormat, archive::zip).doc("use zip archive file format"),
-    clipp::value("output file", output)
+    clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
   auto decompressionMode = (
     clipp::command("unpack").set(selected, mode::decompression).doc("data decompression mode"),
     clipp::values("input file(s)", input),
-    clipp::value("output dir", output)
+    clipp::option("-o", "--output").doc("output directory") & clipp::value("output dir", output)
   );
 
   auto infoMode = (
