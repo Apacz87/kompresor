@@ -3,6 +3,8 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
 SOURCEDIR = source
 
+.PHONY: kompresor
+
 all: kompresor
 
 kompresor:
