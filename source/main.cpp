@@ -6,37 +6,37 @@
 
 int main(int argc, char* argv[])
 {
-  enum class mode {compression, decompression, info, help};
-  enum class archive {zip};
-  enum class compressionAlgorithm {BZIP2, LZMA, Deflate, DCL, Implode, WavPack};
-  mode selected = mode::help;
-  archive fileFormat = archive::zip;
-  compressionAlgorithm algorithm = compressionAlgorithm::Deflate;
-  std::vector<std::string> input;
-  std::string output;
   const std::string ApplicationName = "kompresor";
   const std::string ApplicationVersion = "0.0.0-alpka.0.1.0";
+  enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
+  enum class Archive {ZIP};
+  enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
+  Mode selected = Mode::HELP;
+  Archive fileFormat = Archive::ZIP;
+  CompressionAlgorithm algorithm = CompressionAlgorithm::DEFLATE;
+  std::vector<std::string> input;
+  std::string output;
 
   auto compressionMode = (
-    clipp::command("pack").set(selected, mode::compression).doc("data compression mode"),
+    clipp::command("pack").set(selected, Mode::COMPRESSION).doc("data compression mode"),
     clipp::values("input file(s)", input),
-    clipp::option("-z", "--zip").set(fileFormat, archive::zip).doc("use zip archive file format"),
+    clipp::option("-z", "--zip").set(fileFormat, Archive::ZIP).doc("use zip archive file format"),
     clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
   auto decompressionMode = (
-    clipp::command("unpack").set(selected, mode::decompression).doc("data decompression mode"),
+    clipp::command("unpack").set(selected, Mode::DECOMPRESSION).doc("data decompression mode"),
     clipp::values("input file(s)", input),
     clipp::option("-o", "--output").doc("output directory") & clipp::value("output dir", output)
   );
 
   auto infoMode = (
-    clipp::command("info").set(selected, mode::decompression).doc("displays file information"),
+    clipp::command("info").set(selected, Mode::INFO).doc("displays file information"),
     clipp::values("input file", input)
   );
 
   auto cli = (
-    (compressionMode | decompressionMode | infoMode | clipp::command("help").set(selected,mode::help).doc("print man page") ),
+    (compressionMode | decompressionMode | infoMode | clipp::command("help").set(selected,Mode::HELP).doc("print man page") ),
     clipp::option("-v", "--version").call([&ApplicationVersion]{
       std::cout << "Version: " << ApplicationVersion << "\n";
       std::cout << "Compilation date: " << __DATE__ << ' ' << __TIME__ "\n";
@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
   {
     switch(selected)
     {
-      case mode::compression:
+      case Mode::COMPRESSION:
       {
         std::cout << "Input files: ";
         for (auto file : input)
@@ -55,11 +55,11 @@ int main(int argc, char* argv[])
           std::cout << file << ' ';
         }
         std::cout << std::endl;
-        std::cout << "Zip: " << (fileFormat == archive::zip ? "true" : "false") << '\n';
+        std::cout << "Zip: " << (fileFormat == Archive::ZIP ? "true" : "false") << '\n';
         std::cout << "Output file: " << output << '\n';
         break;
       }
-      case mode::decompression:
+      case Mode::DECOMPRESSION:
       {
         std::cout << "Input files: ";
         for (auto file : input)
@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
         std::cout << "Output dir: " << output << '\n';
         break;
       }
-      case mode::info:
+      case Mode::INFO:
       {
         std::cout << "Input files: ";
         for (auto file : input)
@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
         std::cout << std::endl;
         break;
       }
-      case mode::help: std::cout << clipp::make_man_page(cli, ApplicationName); break;
+      case Mode::HELP: std::cout << clipp::make_man_page(cli, ApplicationName); break;
     }
   }
   else
