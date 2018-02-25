@@ -3,24 +3,23 @@
 #include <vector>
 
 #include "../external/clipp/include/clipp.h"
+#include "archiver.hpp"
 
 int main(int argc, char* argv[])
 {
   const std::string ApplicationName = "kompresor";
   const std::string ApplicationVersion = "0.0.0-alpka.0.2.0";
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
-  enum class Archive {ZIP};
-  enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
   Mode selected = Mode::HELP;
-  Archive fileFormat = Archive::ZIP;
-  CompressionAlgorithm algorithm = CompressionAlgorithm::DEFLATE;
+  archiver::ArchiveType fileFormat = archiver::ArchiveType::ZIP;
+  archiver::CompressionAlgorithm algorithm = archiver::CompressionAlgorithm::DEFLATE;
   std::vector<std::string> input;
   std::string output;
 
   auto compressionMode = (
     clipp::command("pack").set(selected, Mode::COMPRESSION).doc("data compression mode"),
     clipp::values("input file(s)", input),
-    clipp::option("-z", "--zip").set(fileFormat, Archive::ZIP).doc("use zip archive file format"),
+    clipp::option("-z", "--zip").set(fileFormat, archiver::ArchiveType::ZIP).doc("use zip archive file format"),
     clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
@@ -49,13 +48,9 @@ int main(int argc, char* argv[])
     {
       case Mode::COMPRESSION:
       {
-        std::cout << "Input files: ";
-        for (auto file : input)
-        {
-          std::cout << file << ' ';
-        }
-        std::cout << std::endl;
-        std::cout << "Zip: " << (fileFormat == Archive::ZIP ? "true" : "false") << '\n';
+        archiver::ArchiveFactory archiver(fileFormat, algorithm);
+        archiver.Create(input);
+        std::cout << "Zip: " << (fileFormat == archiver::ArchiveType::ZIP ? "true" : "false") << '\n';
         std::cout << "Output file: " << output << '\n';
         break;
       }
@@ -72,12 +67,10 @@ int main(int argc, char* argv[])
       }
       case Mode::INFO:
       {
-        std::cout << "Input files: ";
         for (auto file : input)
         {
-          std::cout << file << ' ';
+          archiver::FileInfo(file);
         }
-        std::cout << std::endl;
         break;
       }
       case Mode::HELP: std::cout << clipp::make_man_page(cli, ApplicationName); break;
