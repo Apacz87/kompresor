@@ -1,7 +1,10 @@
 #ifndef ZIP_HPP
 #define ZIP_HPP
 
+#include <iostream>
 #include <cstdint>
+#include <cstdio>
+#include <string>
 
 namespace zip
 {
@@ -25,41 +28,85 @@ namespace zip
   // The local file header
   struct LocalFileHeader
   {
+    char m_header_basic_data[30];
     // Local file header signature (0x04034b50) (Offset: 0, Lenght: 4 bytes)
-    uint32_t m_signature;
+    uint32_t get_signature()
+    {
+      return *((uint32_t*)(&this->m_header_basic_data));
+    }
 
     // Version needed to extract (Offset: 4, Lenght: 2 bytes)
-    uint16_t m_version;
+    uint16_t get_version()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[4]));
+    }
 
     // General purpose bit flag (Offset: 6, Lenght: 2 bytes)
-    uint16_t m_bit_flag;
+    uint16_t get_bit_flag()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[6]));
+    }
 
     // Compression method (Offset: 8, Lenght: 2 bytes)
-    uint16_t m_compression_method;
+    uint16_t get_compression_method()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[8]));
+    }
 
     // Last mod file time (Offset: 10, Lenght: 2 bytes)
-    uint16_t m_last_mod_time;
+    uint16_t get_last_mod_time()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[10]));
+    }
 
     // Last mod file date (Offset: 12, Lenght: 2 bytes)
-    uint16_t m_last_mod_date;
+    uint16_t get_last_mod_date()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[12]));
+    }
 
     // CRC-32 (Offset: 14, Lenght: 4 bytes)
-    uint32_t m_crc;
+    uint32_t get_crc()
+    {
+      return *((uint32_t*)(&this->m_header_basic_data[14]));
+    }
 
     // Compressed size (n) (Offset: 18, Lenght: 4 bytes)
-    uint32_t m_compressed_size;
+    uint32_t get_compressed_size()
+    {
+      return *((uint32_t*)(&this->m_header_basic_data[18]));
+    }
 
     // Uncompressed size (Offset: 22, Lenght: 4 bytes)
-    uint32_t m_uncompressed_size;
+    uint32_t get_uncompressed_size()
+    {
+      return *((uint32_t*)(&this->m_header_basic_data[22]));
+    }
 
     // Filename length (f) (Offset: 26, Lenght: 2 bytes)
-    uint16_t m_file_name_lenght;
+    uint16_t get_file_name_lenght()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[26]));
+    }
 
     // Extra field length (e) (Offset: 28, Lenght: 2 bytes)
-    uint16_t m_extra_field_length;
+    uint16_t get_extra_field_length()
+    {
+      return *((uint16_t*)(&this->m_header_basic_data[28]));
+    }
 
     // Filename (Offset: 30, Lenght: (f) bytes)
+    std::string get_file_name()
+    {
+      return std::string(&this->m_header_basic_data[30], this->get_file_name_lenght());
+    }
+
     // Extra field (Offset: (30 + (f)), Lenght: (e) bytes)
+    size_t get_extra_field_offset()
+    {
+      return (size_t)&this->m_header_basic_data[30 + this->get_file_name_lenght()];
+    }
+
     // Compressed data (Offset: ((30 + (f)) + (e)), Lenght: (n) bytes)
   };
 
