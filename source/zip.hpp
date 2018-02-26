@@ -108,6 +108,56 @@ namespace zip
     }
 
     // Compressed data (Offset: ((30 + (f)) + (e)), Lenght: (n) bytes)
+    size_t get_data_offset()
+    {
+      return this->get_extra_field_offset() + this->get_extra_field_length();
+    }
+
+    void print_data()
+    {
+      auto data = (unsigned char*)this->get_data_offset();
+      for ( size_t i = 0, j = 0; i < this->get_compressed_size(); i++, j++)
+      {
+        //std::cout << std::showbase << std::hex << (int)data[i];
+        //std::cout << "0x" << std::hex << (int)data[i];
+        printf("%02X", (int)data[i]);
+        if (j > 15)
+        {
+          //std::cout << '\n';
+          printf("\n");
+          j = 0;
+          continue;
+        }
+        //std::cout << ' ';
+        printf(" ");
+      }
+
+      std::cout << std::dec << std::endl;
+    }
+
+    // Print conntent from local file header
+    void print()
+    {
+      //char* signature_ptr = (char*)m_header_basic_data;
+      std::cout << "Signature: " << m_header_basic_data[0] << m_header_basic_data[1] << " " << (int)m_header_basic_data[2]
+        << " " << (int)m_header_basic_data[3] << '\n';
+      std::cout << "Version: " << this->get_version() <<  '\n';
+      std::cout << "Bit flag: " << std::hex << this->get_bit_flag() << '\n';
+      std::cout << "Compression method: " << this->get_compression_method() << '\n';
+      std::cout << "Last mod time:"<< std::hex << this->get_last_mod_time() << '\n';
+      std::cout << "Last mod date:"<< std::hex << this->get_last_mod_date() << '\n';
+      std::cout << "CRC-32: " << std::hex << this->get_crc() << '\n';
+      std::cout << "Compressed size: " << std::dec << this->get_compressed_size() << " bytes\n";
+      std::cout << "Uncompressed size: " << this->get_uncompressed_size() << " bytes\n";
+      std::cout << "File_name_lenght: " << this->get_file_name_lenght() << '\n';
+      std::cout << "Extra_field_length: " << this->get_extra_field_length() << '\n';
+      std::cout << "File name: " << this->get_file_name() << '\n';
+      std::cout << "Struct offset: " << this << '\n';
+      std::cout << "Extra field offset: " << std::hex << this->get_extra_field_offset() << std::dec << '\n';
+      std::cout << "Data field offset: " << std::hex << this->get_data_offset() << std::dec << '\n';
+      std::cout << "Data:\n";
+      this->print_data();
+    }
   };
 
   // The extended local header
