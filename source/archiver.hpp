@@ -58,17 +58,7 @@ namespace archiver
     }
 
     zip::LocalFileHeader* first_header = (zip::LocalFileHeader*)p;
-    std::cout << "m_signature:" << first_header->m_signature << '\n';
-    std::cout << "m_version:" << first_header->m_version << '\n';
-    std::cout << "m_bit_flag:" << first_header->m_bit_flag << '\n';
-    std::cout << "m_compression_method:" << first_header->m_compression_method << '\n';
-    std::cout << "m_last_mod_time:" << first_header->m_last_mod_time << '\n';
-    std::cout << "m_last_mod_date:" << first_header->m_last_mod_date << '\n';
-    std::cout << "m_crc:" << first_header->m_crc << '\n';
-    std::cout << "m_compressed_size:" << first_header->m_compressed_size << '\n';
-    std::cout << "m_uncompressed_size:" << first_header->m_uncompressed_size << '\n';
-    std::cout << "m_file_name_lenght:" << first_header->m_file_name_lenght << '\n';
-    std::cout << "m_extra_field_length:" << first_header->m_extra_field_length << '\n';
+    first_header->print();
 
     for ( auto len = 0; len < file_stat.st_size; len++)
     {
