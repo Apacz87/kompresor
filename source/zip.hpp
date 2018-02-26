@@ -56,12 +56,12 @@ namespace zip
     uint16_t m_file_name_lenght;
 
     // Extra field length (e) (Offset: 28, Lenght: 2 bytes)
-    uint16_t m_extra_field_length
+    uint16_t m_extra_field_length;
 
     // Filename (Offset: 30, Lenght: (f) bytes)
     // Extra field (Offset: (30 + (f)), Lenght: (e) bytes)
     // Compressed data (Offset: ((30 + (f)) + (e)), Lenght: (n) bytes)
-  }
+  };
 
   // The extended local header
   struct ExtendedLocalHeader
@@ -77,7 +77,7 @@ namespace zip
 
     // Uncompressed size (Offset: 12, Lenght: 4 bytes)
     uint32_t m_uncompressed_size;
-  }
+  };
 
   // The central directory
   struct CentralDirectory
@@ -136,7 +136,7 @@ namespace zip
     // Filename (Offset: 46, Lenght (f) bytes)
     // Extra field (Offset: (46 + (f)), Lenght (e) bytes)
     // File comment (Offset: ((46 + (f)) + (e)), Lenght (c) bytes)
-  }
+  };
 
   // The end of central directory record
   struct EndOfCentralDirectory
@@ -166,7 +166,7 @@ namespace zip
     uint16_t m_comment_length;
 
     // Zipfile comment (Offset: 22, Lenght: (c) bytes)
-  }
+  };
 
 }
 
