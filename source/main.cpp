@@ -8,7 +8,7 @@
 int main(int argc, char* argv[])
 {
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpka.0.7.1";
+  const std::string ApplicationVersion = "0.0.0-alpka.0.7.2";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
