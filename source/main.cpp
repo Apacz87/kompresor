@@ -7,34 +7,49 @@
 
 int main(int argc, char* argv[])
 {
+  // The current version of application.
   const std::string ApplicationVersion = "0.0.0-alpka.0.7.1";
+
+  // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
   Mode selected = Mode::HELP;
+
+  // The selected archive type.
   archiver::ArchiveType fileFormat = archiver::ArchiveType::ZIP;
+
+  // The selected compression algorithm.
   archiver::CompressionAlgorithm algorithm = archiver::CompressionAlgorithm::DEFLATE;
+
+  // The program input files.
   std::vector<std::string> input;
+
+  // The program output file/directory.
   std::string output;
 
+  // The compression mode options.
   auto compressionMode = (
     // TODO: Archive selection need better documentation.
     clipp::command("pack").set(selected, Mode::COMPRESSION).doc("data compression mode"),
     clipp::values("input file(s)", input),
     clipp::with_prefix("-", clipp::option("zip") >> [&]{ fileFormat = archiver::ArchiveType::ZIP; } |
-                            clipp::option("gz") >> [&]{ fileFormat = archiver::ArchiveType::GNUGZIP; } ).doc("determines used archive format"),
+      clipp::option("gz") >> [&]{ fileFormat = archiver::ArchiveType::GNUGZIP; } ).doc("determines used archive format"),
     clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
+  // The decompression mode options.
   auto decompressionMode = (
     clipp::command("unpack").set(selected, Mode::DECOMPRESSION).doc("data decompression mode"),
     clipp::values("input file(s)", input),
     clipp::option("-o", "--output").doc("output directory") & clipp::value("output dir", output)
   );
 
+  // The info mode options.
   auto infoMode = (
     clipp::command("info").set(selected, Mode::INFO).doc("displays file information"),
     clipp::values("input file", input)
   );
 
+  // The command line interface.
   auto cli = (
     (compressionMode | decompressionMode | infoMode | clipp::command("help").set(selected,Mode::HELP).doc("print man page") ),
     clipp::option("-v", "--version").call([&ApplicationVersion]{
@@ -43,6 +58,7 @@ int main(int argc, char* argv[])
     }).doc("show version")
   );
 
+  // The command line parser.
   if(clipp::parse(argc, argv, cli))
   {
     switch(selected)
