@@ -43,6 +43,23 @@ namespace archiver
     return false;
   }
 
+  void* SearchForCentralDirectory(void* t_pointer, size_t t_data_size)
+  {
+    char* ptr = (char*)t_pointer;
+    for (size_t i = 0; i < t_data_size; i++)
+    {
+      int* value = (int*) ptr;
+      if (*value == 0x02014b50)
+      {
+        return value;
+      }
+
+      ptr++;
+    }
+
+    return nullptr;
+  }
+
   void MapZipIntoMemory(int fd)
   {
     struct stat file_stat;
@@ -60,11 +77,13 @@ namespace archiver
     zip::LocalFileHeader* first_header = (zip::LocalFileHeader*)p;
     first_header->print();
 
-    for ( auto len = 0; len < file_stat.st_size; len++)
+    /*for ( auto len = 0; len < file_stat.st_size; len++)
     {
       putchar(p[len]);
-    }
+    }*/
+    zip::CentralDirectory* central_directory = (zip::CentralDirectory*) SearchForCentralDirectory(p, file_stat.st_size);
 
+    central_directory->print_data();
     std::cout << '\n';
 
     if (munmap(p, file_stat.st_size) == -1)
