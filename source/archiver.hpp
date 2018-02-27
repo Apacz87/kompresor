@@ -15,7 +15,7 @@
 
 namespace archiver
 {
-  enum class ArchiveType {ZIP};
+  enum class ArchiveType {ZIP, GNUGZIP};
   enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
 
   bool IsArchive(int t_file_descriptor)
