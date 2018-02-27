@@ -161,6 +161,7 @@ namespace zip
   };
 
   // The extended local header
+  #pragma pack(push, 1)
   struct ExtendedLocalHeader
   {
     // Extended Local file header signature (0x08074b50) (Offset: 0, Lenght: 4 bytes)
@@ -175,6 +176,7 @@ namespace zip
     // Uncompressed size (Offset: 12, Lenght: 4 bytes)
     uint32_t m_uncompressed_size;
   };
+  #pragma pack(pop)
 
   // The central directory
   #pragma pack(push, 1)
@@ -272,6 +274,7 @@ namespace zip
   #pragma pack(pop)
 
   // The end of central directory record
+  #pragma pack(push, 1)
   struct EndOfCentralDirectory
   {
     // End of central dir signature (0x06054b50) (Offset: 0, Lenght: 4 bytes)
@@ -300,6 +303,7 @@ namespace zip
 
     // Zipfile comment (Offset: 22, Lenght: (c) bytes)
   };
+  #pragma pack(pop)
 
 }
 
