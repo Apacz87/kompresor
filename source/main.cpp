@@ -7,7 +7,6 @@
 
 int main(int argc, char* argv[])
 {
-  const std::string ApplicationName = "kompresor";
   const std::string ApplicationVersion = "0.0.0-alpka.0.7.0";
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
   Mode selected = Mode::HELP;
@@ -48,6 +47,7 @@ int main(int argc, char* argv[])
     {
       case Mode::COMPRESSION:
       {
+        // TODO: Create zip file from input files.
         archiver::ArchiveFactory archiver(fileFormat, algorithm);
         archiver.Create(input);
         std::cout << "Zip: " << (fileFormat == archiver::ArchiveType::ZIP ? "true" : "false") << '\n';
@@ -56,6 +56,7 @@ int main(int argc, char* argv[])
       }
       case Mode::DECOMPRESSION:
       {
+        // TODO: Decompress archive files from input.
         std::cout << "Input files: ";
         for (auto file : input)
         {
@@ -67,18 +68,19 @@ int main(int argc, char* argv[])
       }
       case Mode::INFO:
       {
+        // TODO: Print info about files from input.
         for (auto file : input)
         {
           archiver::FileInfo(file);
         }
         break;
       }
-      case Mode::HELP: std::cout << clipp::make_man_page(cli, ApplicationName); break;
+      case Mode::HELP: std::cout << clipp::make_man_page(cli, argv[0]); break;
     }
   }
   else
   {
-    std::cout << clipp::usage_lines(cli, ApplicationName) << '\n';
+    std::cout << clipp::usage_lines(cli, argv[0]) << '\n';
   }
 
   return 0;
