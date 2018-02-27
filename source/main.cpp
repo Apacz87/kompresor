@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[])
 {
-  const std::string ApplicationVersion = "0.0.0-alpka.0.7.0";
+  const std::string ApplicationVersion = "0.0.0-alpka.0.7.1";
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
   Mode selected = Mode::HELP;
   archiver::ArchiveType fileFormat = archiver::ArchiveType::ZIP;
@@ -16,9 +16,11 @@ int main(int argc, char* argv[])
   std::string output;
 
   auto compressionMode = (
+    // TODO: Archive selection need better documentation.
     clipp::command("pack").set(selected, Mode::COMPRESSION).doc("data compression mode"),
     clipp::values("input file(s)", input),
-    clipp::option("-z", "--zip").set(fileFormat, archiver::ArchiveType::ZIP).doc("use zip archive file format"),
+    clipp::with_prefix("-", clipp::option("zip") >> [&]{ fileFormat = archiver::ArchiveType::ZIP; } |
+                            clipp::option("gz") >> [&]{ fileFormat = archiver::ArchiveType::GNUGZIP; } ).doc("determines used archive format"),
     clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
