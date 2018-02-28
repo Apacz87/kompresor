@@ -234,41 +234,52 @@ namespace zip
     uint32_t m_relative_offset_of_local_header;
 
     // Filename (Offset: 46, Lenght (f) bytes)
-    // Extra field (Offset: (46 + (f)), Lenght (e) bytes)
-    // File comment (Offset: ((46 + (f)) + (e)), Lenght (c) bytes)
     std::string get_file_name()
     {
       char* ptr = (char*)&this->m_signature;
       return std::string(&ptr[46], this->m_file_name_lenght);
     }
 
+    // Extra field (Offset: (46 + (f)), Lenght (e) bytes)
+    size_t get_extra_field_offset()
+    {
+      char* signature_ptr = (char*)&this->m_signature;
+      return (size_t)((signature_ptr + 46) + this->m_file_name_lenght);
+    }
+
+    // File comment (Offset: ((46 + (f)) + (e)), Lenght (c) bytes)
+    size_t get_comment_offset()
+    {
+      return this->get_extra_field_offset() + this->m_extra_field_length;
+    }
+
     void print_data()
     {
-      std::cout << "Central directory signature: " << this->m_signature << '\n';
+      char* signature_ptr = (char*)&this->m_signature;
+      std::cout << "Central directory signature: " << signature_ptr[0] << signature_ptr[1] << " "
+        << (int)signature_ptr[2] << " " << (int)signature_ptr[3] << '\n';
+      //std::cout << "Central directory signature: " << this->m_signature << '\n';
       std::cout << "Made by version: " << this->m_version_mady_by << '\n';
       std::cout << "Version needed to extract: " << this->m_version_to_extract << '\n';
-      std::cout << "Bit Flag: " << this->m_bit_flag << '\n';
+      std::cout << "Bit Flag: " << std::hex << this->m_bit_flag << '\n';
       std::cout << "Compression method: " << this->m_compression_method << '\n';
       std::cout << "Last mod file time: " << this->m_last_mod_time << '\n';
       std::cout << "Last mod file date: " << this->m_last_mod_date << '\n';
       std::cout << "CRC-32: " << this->m_crc << '\n';
-      std::cout << "Compressed size: " << this->m_compressed_size << '\n';
-      std::cout << "Uncompressed size: " << this->m_uncompressed_size << '\n';
-
-      // Filename length (f) (Offset: 28, Lenght: 2 bytes)
-      /*uint16_t m_file_name_lenght;
-
-      // Extra field length (e) (Offset: 30, Lenght: 2 bytes)
-      uint16_t m_extra_field_length;
-
-      // File comment length (c) (Offset: 32, Lenght: 2 bytes)
-      uint16_t m_file_comment_length;*/
-
-      std::cout << "Disk number start: " << this->m_disk_number_start << '\n';
+      std::cout << "Compressed size: " << std::dec << this->m_compressed_size << " bytes\n";
+      std::cout << "Uncompressed size: " << this->m_uncompressed_size << " bytes\n";
+      std::cout << "Filename length: " << this->m_file_name_lenght << '\n';
+      std::cout << "Extra field length: " << this->m_extra_field_length << '\n';
+      std::cout << "File comment length: " << this->m_file_comment_length << '\n';
+      std::cout << "Disk number start: " << std::hex << this->m_disk_number_start << '\n';
       std::cout << "Internal file attributes: " << this->m_internal_file_attributes << '\n';
       std::cout << "External file attributes: " << this->m_external_file_attributes << '\n';
       std::cout << "Relative offset of local header: " << this->m_relative_offset_of_local_header << '\n';
       std::cout << "File name: " << this->get_file_name() << std::endl;
+      if (this->m_file_comment_length > 0)
+      {
+        std::cout << "Comment: " << std::string(this->get_comment_offset(), this->m_file_comment_length) << std::endl;
+      }
     }
   };
   #pragma pack(pop)
