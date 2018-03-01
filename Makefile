@@ -3,9 +3,12 @@ CXX = g++
 CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
 SOURCEDIR = source
 
-.PHONY: kompresor
+.PHONY: kompresor debug
 
 all: kompresor
+
+debug: CXXFLAGS += -DDEBUG -g
+debug: kompresor
 
 kompresor:
 	$(CXX) $(CXXFLAGS) $(SOURCEDIR)/main.cpp -o $@
