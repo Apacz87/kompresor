@@ -59,6 +59,23 @@ namespace archiver
 
     return nullptr;
   }
+  
+  void* SearchForEndOfCentralDirectory(void* t_pointer, size_t t_data_size)
+  {
+    char* ptr = (char*)t_pointer;
+    for (size_t i = 0; i < t_data_size; i++)
+    {
+      int* value = (int*) ptr;
+      if (*value == 0x06054b50)
+      {
+        return value;
+      }
+
+      ptr++;
+    }
+
+    return nullptr;
+  }
 
   void MapZipIntoMemory(int fd)
   {
@@ -85,6 +102,9 @@ namespace archiver
 
     central_directory->print_data();
     std::cout << '\n';
+    
+    zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
+    end_central_directory->print_data();
 
     if (munmap(p, file_stat.st_size) == -1)
     {
