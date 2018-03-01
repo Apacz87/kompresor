@@ -313,7 +313,12 @@ namespace zip
     uint16_t m_comment_length;
 
     // Zipfile comment (Offset: 22, Lenght: (c) bytes)
-    
+    std::string get_comment()
+    {
+      char* ptr = (char*)&this->m_signature;
+      return std::string(&ptr[22], this-> m_comment_length);
+    }
+
     void print_data()
     {
       char* signature_ptr = (char*)&this->m_signature;
@@ -326,6 +331,10 @@ namespace zip
       std::cout << "Size of the central directory: " << this->m_central_directory_size << " bytes\n";
       std::cout << "Offset of start of central directory: " << this->m_start_offset << '\n';
       std::cout << "Zipfile comment length: " << this->m_comment_length << '\n';
+      if (this->m_comment_length > 0)
+      {
+        std::cout << "Comment: " << this->get_comment() << '\n';
+      }
     }
   };
   #pragma pack(pop)
