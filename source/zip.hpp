@@ -313,6 +313,20 @@ namespace zip
     uint16_t m_comment_length;
 
     // Zipfile comment (Offset: 22, Lenght: (c) bytes)
+    
+    void print_data()
+    {
+      char* signature_ptr = (char*)&this->m_signature;
+      std::cout << "End of central directory signature: " << signature_ptr[0] << signature_ptr[1] << " "
+        << (int)signature_ptr[2] << " " << (int)signature_ptr[3] << '\n';
+      std::cout << "Number of this disk: " << std::dec << this->m_this_disk_number << '\n';
+      std::cout << "Number of the disk with the start of the central directory: " << this->m_no_name_for_now << '\n';
+      std::cout << "Total number of entries in the central dir on this disk: " << this->m_number_of_entries_on_this_disk << '\n';
+      std::cout << "Total number of entries in the central dir: " << this->m_number_of_entries << '\n';
+      std::cout << "Size of the central directory: " << this->m_central_directory_size << " bytes\n";
+      std::cout << "Offset of start of central directory: " << this->m_start_offset << '\n';
+      std::cout << "Zipfile comment length: " << this->m_comment_length << '\n';
+    }
   };
   #pragma pack(pop)
 
