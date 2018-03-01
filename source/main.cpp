@@ -8,7 +8,7 @@
 int main(int argc, char* argv[])
 {
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.7.2";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.8.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
