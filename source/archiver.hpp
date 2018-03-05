@@ -1,19 +1,20 @@
 #ifndef ARCHIVER_HPP
 #define ARCHIVER_HPP
 
-#include <stdexcept>
-#include <string>
-#include <vector>
-
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <stdexcept>
+#include <string>
+#include <vector>
+
 #include "zip.hpp"
 
-namespace archiver
+// Archive management tools.
+namespace amt
 {
   enum class ArchiveType {ZIP, GNUGZIP};
   enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
@@ -59,7 +60,7 @@ namespace archiver
 
     return nullptr;
   }
-  
+
   void* SearchForEndOfCentralDirectory(void* t_pointer, size_t t_data_size)
   {
     char* ptr = (char*)t_pointer;
@@ -102,7 +103,7 @@ namespace archiver
 
     central_directory->print_data();
     std::cout << '\n';
-    
+
     zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
     end_central_directory->print_data();
 
