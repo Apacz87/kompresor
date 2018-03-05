@@ -2,23 +2,23 @@
 #include <string>
 #include <vector>
 
-#include "../external/clipp/include/clipp.h"
-#include "archiver.hpp"
+#include "archivization_tools.hpp"
+#include "clipp.h"
 
 int main(int argc, char* argv[])
 {
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.8.0";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.11.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
   Mode selected = Mode::HELP;
 
   // The selected archive type.
-  archiver::ArchiveType fileFormat = archiver::ArchiveType::ZIP;
+  amt::ArchiveType fileFormat = amt::ArchiveType::ZIP;
 
   // The selected compression algorithm.
-  archiver::CompressionAlgorithm algorithm = archiver::CompressionAlgorithm::DEFLATE;
+  amt::CompressionAlgorithm algorithm = amt::CompressionAlgorithm::DEFLATE;
 
   // The program input files.
   std::vector<std::string> input;
@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
     // TODO: Archive selection need better documentation.
     clipp::command("pack").set(selected, Mode::COMPRESSION).doc("data compression mode"),
     clipp::values("input file(s)", input),
-    clipp::with_prefix("-", clipp::option("zip") >> [&]{ fileFormat = archiver::ArchiveType::ZIP; } |
-      clipp::option("gz") >> [&]{ fileFormat = archiver::ArchiveType::GNUGZIP; } ).doc("determines used archive format"),
+    clipp::with_prefix("-", clipp::option("zip") >> [&]{ fileFormat = amt::ArchiveType::ZIP; } |
+      clipp::option("gz") >> [&]{ fileFormat = amt::ArchiveType::GNUGZIP; } ).doc("determines used archive format"),
     clipp::option("-o", "--output").doc("output file") & clipp::value("output file", output)
   );
 
@@ -66,22 +66,23 @@ int main(int argc, char* argv[])
       case Mode::COMPRESSION:
       {
         // TODO: Create zip file from input files.
-        archiver::ArchiveFactory archiver(fileFormat, algorithm);
-        archiver.Create(input);
-        std::cout << "Zip: " << (fileFormat == archiver::ArchiveType::ZIP ? "true" : "false") << '\n';
-        std::cout << "Output file: " << output << '\n';
+        // amt::Archive archive = amt::ArchiveFactory(settings);
+        // amt::Archive archive = amt::ArchiveFactory.Create(settings);
+        // archive.pack(input);
+        // archive.save(output)
         break;
       }
       case Mode::DECOMPRESSION:
       {
         // TODO: Decompress archive files from input.
-        std::cout << "Input files: ";
         for (auto file : input)
         {
-          std::cout << file << ' ';
+          // amt::Archive archive = amt::ArchiveFactory(file);
+          // amt::Archive archive = amt::ArchiveFactory.Read(file);
+          // archive.unpack();
+          // archive.unpack(output);
         }
-        std::cout << std::endl;
-        std::cout << "Output dir: " << output << '\n';
+
         break;
       }
       case Mode::INFO:
@@ -89,8 +90,17 @@ int main(int argc, char* argv[])
         // TODO: Print info about files from input.
         for (auto file : input)
         {
-          archiver::FileInfo(file);
+          // if (amt::IsArchive(file))
+          // {
+          //  amt::Archive archive = amt::ArchiveFactory.Read(file);
+          //  archive.PrintStat();
+          // }
+          // else
+          // {
+          //  amt::PrintFileStat(file);
+          // }
         }
+
         break;
       }
       case Mode::HELP: std::cout << clipp::make_man_page(cli, argv[0]); break;
