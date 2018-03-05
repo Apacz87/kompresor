@@ -1,7 +1,8 @@
 # global variables: CXX and CXXFLAGS are predefined.
-CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++11
 SOURCEDIR = source
+CLIPPDIR = external/clipp/include/
+CXX = g++
+CXXFLAGS = -Wall -Wextra -pedantic -std=c++11 -I $(CLIPPDIR)
 
 .PHONY: kompresor debug
 
