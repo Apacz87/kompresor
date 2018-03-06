@@ -11,8 +11,11 @@ all: kompresor
 debug: CXXFLAGS += -DDEBUG -g
 debug: kompresor
 
-kompresor:
+kompresor: archivization_tools.o
 	$(CXX) $(CXXFLAGS) $(SOURCEDIR)/main.cpp -o $@
+
+archivization_tools.o:
+	$(CXX) $(CXXFLAGS) -c $(SOURCEDIR)/archivization_tools.cpp
 
 clean:
 	rm kompresor

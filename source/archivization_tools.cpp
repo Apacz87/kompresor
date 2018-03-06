@@ -157,7 +157,7 @@ namespace amt
 
   }
 
-  static void ArchiveFactory::Create(const std::string t_archive_path)
+  Archive ArchiveFactory::Create(const std::string t_archive_path)
   {
     /*for(auto filePath : t_paths)
     {

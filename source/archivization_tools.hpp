@@ -16,8 +16,6 @@
 // Archive management tools.
 namespace amt
 {
-  enum class ArchiveType {ZIP, GNUGZIP};
-  enum class CompressionAlgorithm {BZIP2, LZMA, DEFLATE, DCL, IMPLODE, WAVPACK};
 
   bool IsArchive(int);
 
@@ -61,8 +59,8 @@ namespace amt
     {
     }
 
-    static Archive Create(const std::string);
-    static Archive Read(const std::string);
+    Archive Create(const std::string);
+    Archive Read(const std::string);
   };
 }
 

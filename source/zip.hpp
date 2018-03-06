@@ -6,8 +6,11 @@
 #include <cstdio>
 #include <string>
 
-namespace zip
+#include <archive.hpp>
+
+namespace amt::zip
 {
+  using amt::base::Archive;
   // Overall zipfile format:
   // Byte order: Little-endian
   // [Local file header + Compressed data [+ Extended local header]?]*
@@ -24,6 +27,14 @@ namespace zip
   // 6 - The file is Imploded
   // 7 - Reserved for Tokenizing compression algorithm
   // 8 - The file is Deflated
+
+  class ZipArchive : public Archive
+  {
+  public:
+    void Pack(std::string);
+    void Unpack(std::string);
+    void Save(std::string);
+  }
 
   // The local file header
   struct LocalFileHeader
@@ -339,6 +350,6 @@ namespace zip
   };
   #pragma pack(pop)
 
-}
+} // namespace amt::zip
 
 #endif
