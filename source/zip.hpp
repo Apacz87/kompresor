@@ -1,9 +1,10 @@
 #ifndef ZIP_HPP
 #define ZIP_HPP
 
-#include <iostream>
+#include <stdexcept>
 #include <cstdint>
 #include <cstdio>
+#include <iostream>
 #include <string>
 
 #include <archive.hpp>
@@ -27,15 +28,6 @@ namespace archive_management_tools::archives::zip
   // 6 - The file is Imploded
   // 7 - Reserved for Tokenizing compression algorithm
   // 8 - The file is Deflated
-
-  class ZipArchive : public Archive
-  {
-  public:
-    void Pack(std::string);
-    void Unpack(std::string);
-    void Save(std::string);
-  }
-
   namespace components
   {
     // The local file header
@@ -351,7 +343,19 @@ namespace archive_management_tools::archives::zip
       }
     };
     #pragma pack(pop)
-  } // namespace components
+  } // namespace archive_management_tools::archives::zip::components
+
+  class ZipArchive : public Archive
+  {
+  private:
+    void* m_data_pointer;
+    size_t m_data_size;
+  public:
+    void Pack(std::string);
+    void Unpack(std::string);
+    void Save(std::string);
+    ZipArchive(void*, size_t);
+  }
 } // namespace archive_management_tools::archives::zip
 
 #endif
