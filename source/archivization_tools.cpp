@@ -1,6 +1,6 @@
 #include "archivization_tools.hpp"
 
-namespace amt
+namespace archive_management_tools
 {
   bool IsArchive(int t_file_descriptor)
   {
@@ -25,6 +25,11 @@ namespace amt
     }
 
     return false;
+  }
+
+  ArchiveType GetArchiveType(const std::string& t_file_path)
+  {
+
   }
 
   void* SearchForCentralDirectory(void* t_pointer, size_t t_data_size)
@@ -157,7 +162,7 @@ namespace amt
 
   }
 
-  Archive ArchiveFactory::Create(const std::string t_archive_path)
+  Archive ArchiveFactory::Create(const std::string& t_archive_path)
   {
     /*for(auto filePath : t_paths)
     {
@@ -165,4 +170,9 @@ namespace amt
     }*/
     return Archive();
   }
-}
+
+  Archive ArchiveFactory::Read(const std::string& t_archive_path)
+  {
+
+  }
+} // namespace archive_management_tools
