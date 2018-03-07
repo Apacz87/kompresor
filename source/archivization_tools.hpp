@@ -1,5 +1,5 @@
-#ifndef ARCHIVER_HPP
-#define ARCHIVER_HPP
+#ifndef ARCHIVE_MANAGEMENT_TOOLS_HPP
+#define ARCHIVE_MANAGEMENT_TOOLS_HPP
 
 #include <sys/mman.h>
 #include <sys/types.h>
@@ -11,11 +11,14 @@
 #include <string>
 #include <vector>
 
+#include "archive.hpp"
 #include "zip.hpp"
 
-// Archive management tools.
-namespace amt
+namespace archive_management_tools
 {
+  using archive_management_tools::archives::ArchiveType;
+
+  ArchiveType GetArchiveType(const std::string& t_file_path);
 
   bool IsArchive(int);
 
@@ -26,12 +29,6 @@ namespace amt
   void MapZipIntoMemory(int);
 
   void FileInfo(const std::string&);
-
-  class Archive
-  {
-    int m_fileDescriptor;
-    // TODO: Add archive file class content.
-  };
 
   class ArchiveFactory
   {
@@ -59,9 +56,9 @@ namespace amt
     {
     }
 
-    Archive Create(const std::string);
-    Archive Read(const std::string);
+    Archive Create(const std::string&);
+    Archive Read(const std::string&);
   };
-}
+} // namespace archive_management_tools
 
 #endif
