@@ -17,6 +17,8 @@
 namespace archive_management_tools
 {
   using archive_management_tools::archives::ArchiveType;
+  using archive_management_tools::archives::CompressionAlgorithm;
+  using archive_management_tools::archives::Archive;
 
   ArchiveType GetArchiveType(const std::string& t_file_path);
 
@@ -30,10 +32,12 @@ namespace archive_management_tools
 
   void FileInfo(const std::string&);
 
+  archive_management_tools::archives::zip::ZipArchive ReadZip(const std::string& t_path);
+
   class ArchiveFactory
   {
     ArchiveType m_archive_type;
-    CompressionAlgorithm m_compression_algorithm;
+    archive_management_tools::archives::CompressionAlgorithm m_compression_algorithm;
     /*
     void CreateArchive(const std::string& path)
     {
