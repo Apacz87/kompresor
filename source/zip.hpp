@@ -7,7 +7,7 @@
 #include <iostream>
 #include <string>
 
-#include <archive.hpp>
+#include "archive.hpp"
 
 namespace archive_management_tools::archives::zip
 {
@@ -350,12 +350,17 @@ namespace archive_management_tools::archives::zip
   private:
     void* m_data_pointer;
     size_t m_data_size;
+    components::EndOfCentralDirectory* m_end_central_directory;
+    components::CentralDirectory* m_central_directory;
+    void* GetEndOfCentralDirectoryOffset();
+
   public:
     void Pack(std::string);
     void Unpack(std::string);
     void Save(std::string);
+    void Print();
     ZipArchive(void*, size_t);
-  }
+  };
 } // namespace archive_management_tools::archives::zip
 
 #endif

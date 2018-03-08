@@ -1,13 +1,14 @@
 #include "zip.hpp"
 namespace archive_management_tools::archives::zip
 {
-  void* GetEndOfCentralDirectoryOffset(void* t_pointer, size_t t_data_size)
+  void* ZipArchive::GetEndOfCentralDirectoryOffset()
   {
-    char* ptr = (char*)t_pointer;
-    for (size_t i = 0; i < t_data_size; i++)
+    unsigned int signature = 0x06054b50;
+    char* ptr = (char*)this->t_data_pointer;
+    for (size_t i = this->t_data_block_size - 176; i >=0; --i)
     {
       int* value = (int*) ptr;
-      if (*value == 0x06054b50)
+      if (*value == signature)
       {
         return value;
       }
@@ -32,7 +33,13 @@ namespace archive_management_tools::archives::zip
   }
   ZipArchive::ZipArchive(void* t_data_pointer, size_t t_data_block_size) : m_data_pointer(t_data_pointer), m_data_size(t_data_block_size)
   {
-    zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
-    end_central_directory->print_data();
+    this->m_end_central_directory = (components::EndOfCentralDirectory*) this->GetEndOfCentralDirectoryOffset();
+    this->m_central_directory = (components::CentralDirectory*) ((char*)this->m_data_pointer) + this->m_end_central_directory->m_start_offset;
+  }
+
+  ZipArchive::Print()
+  {
+    this->m_end_central_directory->print_data();
+    this->m_central_directory-print_data();
   }
 }
