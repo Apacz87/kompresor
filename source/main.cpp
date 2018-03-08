@@ -4,11 +4,13 @@
 
 #include "archivization_tools.hpp"
 #include "clipp.h"
+#include "zip.hpp"
 
 int main(int argc, char* argv[])
 {
+  namespace amt = archive_management_tools;
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.11.0";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.12.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
@@ -99,6 +101,8 @@ int main(int argc, char* argv[])
           // {
           //  amt::PrintFileStat(file);
           // }
+          auto zip = amt::ReadZip(file);
+          zip.Print();
         }
 
         break;
