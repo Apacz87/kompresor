@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <iostream>
+#include <list>
 #include <string>
 
 #include "archive.hpp"
@@ -321,16 +322,32 @@ namespace archive_management_tools::archives::zip
     void* m_data_pointer;
     size_t m_data_size;
     components::EndOfCentralDirectory* m_end_central_directory;
-    components::CentralDirectory* m_central_directory;
+    std::list<components::CentralDirectory*> m_central_directory_list;
     void* GetEndOfCentralDirectoryOffset();
 
   public:
+    friend class ZipBuilder;
     void Pack(std::string);
     void Unpack(std::string);
     void Save(std::string);
     void Print();
     ZipArchive(void*, size_t);
   };
+
+  namespace build
+  {
+    class ZipBuilder
+    {
+    private:
+      ZipArchive m_zip;
+    public:
+      SetEndOfCentralDirectory();
+      AddCentralDirectory();
+      AddLocalHeader();
+      AddExtendedLocalHeader();
+      //operator ZipArchive&&() { }
+    }
+  } // namespace archive_management_tools::archives::zip::build
 } // namespace archive_management_tools::archives::zip
 
 #endif
