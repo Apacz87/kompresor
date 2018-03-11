@@ -98,20 +98,20 @@ namespace archive_management_tools
       throw std::runtime_error("mmap file failed!");
     }
 
-    zip::LocalFileHeader* first_header = (zip::LocalFileHeader*)p;
-    first_header->print();
+    //zip::LocalFileHeader* first_header = (zip::LocalFileHeader*)p;
+    //first_header->print();
 
     /*for ( auto len = 0; len < file_stat.st_size; len++)
     {
       putchar(p[len]);
     }*/
-    zip::CentralDirectory* central_directory = (zip::CentralDirectory*) SearchForCentralDirectory(p, file_stat.st_size);
+    //zip::CentralDirectory* central_directory = (zip::CentralDirectory*) SearchForCentralDirectory(p, file_stat.st_size);
 
-    central_directory->print_data();
-    std::cout << '\n';
+    //central_directory->print_data();
+    //std::cout << '\n';
 
-    zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
-    end_central_directory->print_data();
+    //zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
+    //end_central_directory->print_data();
 
     if (munmap(p, file_stat.st_size) == -1)
     {
@@ -180,17 +180,13 @@ namespace archive_management_tools
 
   }
 
-  Archive ArchiveFactory::Create(const std::string& t_archive_path)
+  /*Archive ArchiveFactory::Create(const std::string& t_archive_path)
   {
-    /*for(auto filePath : t_paths)
-    {
-      FileInfo(filePath);
-    }*/
     return Archive();
   }
 
   Archive ArchiveFactory::Read(const std::string& t_archive_path)
   {
 
-  }
+  }*/
 } // namespace archive_management_tools
