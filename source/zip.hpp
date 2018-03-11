@@ -31,97 +31,66 @@ namespace archive_management_tools::archives::zip
   namespace components
   {
     // The local file header
+    #pragma pack(push, 1)
     struct LocalFileHeader
     {
-      char m_header_basic_data[30];
       // Local file header signature (0x04034b50) (Offset: 0, Lenght: 4 bytes)
-      uint32_t get_signature()
-      {
-        return *((uint32_t*)(&this->m_header_basic_data));
-      }
+      uint32_t m_signature;
 
       // Version needed to extract (Offset: 4, Lenght: 2 bytes)
-      uint16_t get_version()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[4]));
-      }
+      uint16_t m_version;
 
       // General purpose bit flag (Offset: 6, Lenght: 2 bytes)
-      uint16_t get_bit_flag()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[6]));
-      }
+      uint16_t m_bit_flag;
 
       // Compression method (Offset: 8, Lenght: 2 bytes)
-      uint16_t get_compression_method()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[8]));
-      }
+      uint16_t m_compression_method;
 
       // Last mod file time (Offset: 10, Lenght: 2 bytes)
-      uint16_t get_last_mod_time()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[10]));
-      }
+      uint16_t m_last_mod_time;
 
       // Last mod file date (Offset: 12, Lenght: 2 bytes)
-      uint16_t get_last_mod_date()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[12]));
-      }
+      uint16_t m_last_mod_date;
 
       // CRC-32 (Offset: 14, Lenght: 4 bytes)
-      uint32_t get_crc()
-      {
-        return *((uint32_t*)(&this->m_header_basic_data[14]));
-      }
+      uint32_t m_crc;
 
       // Compressed size (n) (Offset: 18, Lenght: 4 bytes)
-      uint32_t get_compressed_size()
-      {
-        return *((uint32_t*)(&this->m_header_basic_data[18]));
-      }
+      uint32_t m_compressed_size;
 
       // Uncompressed size (Offset: 22, Lenght: 4 bytes)
-      uint32_t get_uncompressed_size()
-      {
-        return *((uint32_t*)(&this->m_header_basic_data[22]));
-      }
+      uint32_t m_uncompressed_size;
 
       // Filename length (f) (Offset: 26, Lenght: 2 bytes)
-      uint16_t get_file_name_lenght()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[26]));
-      }
+      uint16_t m_file_name_lenght;
 
       // Extra field length (e) (Offset: 28, Lenght: 2 bytes)
-      uint16_t get_extra_field_length()
-      {
-        return *((uint16_t*)(&this->m_header_basic_data[28]));
-      }
+      uint16_t m_extra_field_length;
 
       // Filename (Offset: 30, Lenght: (f) bytes)
       std::string get_file_name()
       {
-        return std::string(&this->m_header_basic_data[30], this->get_file_name_lenght());
+        char* pointer = reinterpret_cast<char*>(this->m_signature);
+        return std::string(&pointer[30], this->m_file_name_lenght);
       }
 
       // Extra field (Offset: (30 + (f)), Lenght: (e) bytes)
       size_t get_extra_field_offset()
       {
-        return (size_t)&this->m_header_basic_data[30 + this->get_file_name_lenght()];
+        char* pointer = reinterpret_cast<char*>(this->m_signature);
+        return (size_t)&pointer[30 + this->m_file_name_lenght];
       }
 
       // Compressed data (Offset: ((30 + (f)) + (e)), Lenght: (n) bytes)
       size_t get_data_offset()
       {
-        return this->get_extra_field_offset() + this->get_extra_field_length();
+        return this->get_extra_field_offset() + this->m_extra_field_length;
       }
 
       void print_data()
       {
         auto data = (unsigned char*)this->get_data_offset();
-        for ( size_t i = 0, j = 0; i < this->get_compressed_size(); i++, j++)
+        for ( size_t i = 0, j = 0; i < this->m_compressed_size; i++, j++)
         {
           //std::cout << std::showbase << std::hex << (int)data[i];
           //std::cout << "0x" << std::hex << (int)data[i];
@@ -146,16 +115,16 @@ namespace archive_management_tools::archives::zip
         //char* signature_ptr = (char*)m_header_basic_data;
         std::cout << "Signature: " << m_header_basic_data[0] << m_header_basic_data[1] << " " << (int)m_header_basic_data[2]
           << " " << (int)m_header_basic_data[3] << '\n';
-        std::cout << "Version: " << this->get_version() <<  '\n';
-        std::cout << "Bit flag: " << std::hex << this->get_bit_flag() << '\n';
-        std::cout << "Compression method: " << this->get_compression_method() << '\n';
-        std::cout << "Last mod time:"<< std::hex << this->get_last_mod_time() << '\n';
-        std::cout << "Last mod date:"<< std::hex << this->get_last_mod_date() << '\n';
-        std::cout << "CRC-32: " << std::hex << this->get_crc() << '\n';
-        std::cout << "Compressed size: " << std::dec << this->get_compressed_size() << " bytes\n";
-        std::cout << "Uncompressed size: " << this->get_uncompressed_size() << " bytes\n";
-        std::cout << "File_name_lenght: " << this->get_file_name_lenght() << '\n';
-        std::cout << "Extra_field_length: " << this->get_extra_field_length() << '\n';
+        std::cout << "Version: " << this->m_version <<  '\n';
+        std::cout << "Bit flag: " << std::hex << this->m_bit_flag << '\n';
+        std::cout << "Compression method: " << this->m_compression_method << '\n';
+        std::cout << "Last mod time:"<< std::hex << this->m_last_mod_time << '\n';
+        std::cout << "Last mod date:"<< std::hex << this->m_last_mod_date << '\n';
+        std::cout << "CRC-32: " << std::hex << this->m_crc << '\n';
+        std::cout << "Compressed size: " << std::dec << this->m_compressed_size << " bytes\n";
+        std::cout << "Uncompressed size: " << this->m_uncompressed_size << " bytes\n";
+        std::cout << "File_name_lenght: " << this->m_file_name_lenght << '\n';
+        std::cout << "Extra_field_length: " << this->m_extra_field_length << '\n';
         std::cout << "File name: " << this->get_file_name() << '\n';
         std::cout << "Struct offset: " << this << '\n';
         std::cout << "Extra field offset: " << std::hex << this->get_extra_field_offset() << std::dec << '\n';
@@ -164,6 +133,7 @@ namespace archive_management_tools::archives::zip
         this->print_data();
       }
     };
+    #pragma pack(pop)
 
     // The extended local header
     #pragma pack(push, 1)
