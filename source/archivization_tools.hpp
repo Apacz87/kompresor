@@ -60,8 +60,8 @@ namespace archive_management_tools
     {
     }
 
-    Archive Create(const std::string&);
-    Archive Read(const std::string&);
+    //Archive Create(const std::string&);
+    //Archive Read(const std::string&);
   };
 } // namespace archive_management_tools
 
