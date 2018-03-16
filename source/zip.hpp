@@ -113,9 +113,9 @@ namespace archive_management_tools::archives::zip
       // Print conntent from local file header
       void print()
       {
-        //char* signature_ptr = (char*)m_header_basic_data;
-        std::cout << "Signature: " << m_header_basic_data[0] << m_header_basic_data[1] << " " << (int)m_header_basic_data[2]
-          << " " << (int)m_header_basic_data[3] << '\n';
+        char* signature_ptr = reinterpret_cast<char*>(this->m_signature);
+        std::cout << "Signature: " << signature_ptr[0] << signature_ptr[1] << " "
+          << (int)signature_ptr[2] << " " << (int)signature_ptr[3] << '\n';
         std::cout << "Version: " << this->m_version <<  '\n';
         std::cout << "Bit flag: " << std::hex << this->m_bit_flag << '\n';
         std::cout << "Compression method: " << this->m_compression_method << '\n';
