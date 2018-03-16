@@ -346,7 +346,7 @@ namespace archive_management_tools::archives::zip
       AddLocalHeader();
       AddExtendedLocalHeader();
       //operator ZipArchive&&() { }
-    }
+    };
   } // namespace archive_management_tools::archives::zip::build
 } // namespace archive_management_tools::archives::zip
 
