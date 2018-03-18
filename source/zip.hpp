@@ -29,13 +29,12 @@ namespace archive_management_tools::archives::zip
     // TODO: Add ExtendedLocalHeader
     std::list<components::CentralDirectory*> m_central_directory_list;
     components::EndOfCentralDirectory* m_end_central_directory;
-
-    void* GetEndOfCentralDirectoryOffset();
     ZipArchive() = default;
 
   public:
     friend class ZipBuilder;
     static ZipBuilder Build();
+    void PrintFileStat();
     void Pack(std::string);
     void Unpack(std::string);
     void Save(std::string);
