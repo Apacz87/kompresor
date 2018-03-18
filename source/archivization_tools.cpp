@@ -63,7 +63,8 @@ namespace archive_management_tools
 
   ArchiveType GetArchiveType(const std::string& t_file_path)
   {
-
+    t_file_path.c_str(); // Temporary operation, to remove warnings for compilation log ;)
+    return ArchiveType::UNKNOWN;
   }
 
   void* SearchForCentralDirectory(void* t_pointer, size_t t_data_size)
