@@ -44,22 +44,21 @@ namespace archive_management_tools
     return false;
   }
 
-  archive_management_tools::archives::zip::ZipArchive ReadZip(const std::string& t_path)
+  bool IsArchive(std::string t_path)
   {
-    int fd = open(t_path.c_str(), O_RDONLY);
-    if (fd == -1)
+    int file_descriptor = open(t_path.c_str(), O_RDONLY);
+    if (file_descriptor == -1)
     {
-      throw std::runtime_error("open file failed!");
+      throw std::runtime_error(std::strerror(errno));
     }
 
-    struct stat file_stat;
-    if (fstat(fd, &file_stat))
+    auto is_archive = IsArchive(file_descriptor);
+    if (close(file_descriptor) == -1)
     {
-      throw std::runtime_error("Reading file stat failed!");
+      throw std::runtime_error(std::strerror(errno));
     }
 
-    auto p = mmap(0, file_stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    return archive_management_tools::archives::zip::ZipArchive(p, file_stat.st_size);
+    return is_archive;
   }
 
   ArchiveType GetArchiveType(const std::string& t_file_path)

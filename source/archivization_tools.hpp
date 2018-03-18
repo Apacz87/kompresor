@@ -28,6 +28,7 @@ namespace archive_management_tools
   ArchiveType GetArchiveType(const std::string& t_file_path);
 
   bool IsArchive(int);
+  bool IsArchive(std::string);
 
   void* SearchForCentralDirectory(void*, size_t);
 
