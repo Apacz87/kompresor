@@ -23,17 +23,20 @@ namespace archive_management_tools::archives::zip
 
   void ZipArchive::Pack(std::string  t_input)
   {
-    throw std::runtime_error("The function has not yet been implemented");
+    t_input.clear(); // Temporary operation, to remove warnings for compilation log ;)
+    throw std::runtime_error("The function 'ZipArchive::Pack' has not yet been implemented");
   }
 
   void ZipArchive::Unpack(std::string  t_input)
   {
-    throw std::runtime_error("The function has not yet been implemented");
+    t_input.clear(); // Temporary operation, to remove warnings for compilation log ;)
+    throw std::runtime_error("The function 'ZipArchive::Unpack' has not yet been implemented");
   }
 
   void ZipArchive::Save(std::string t_input)
   {
-    throw std::runtime_error("The function has not yet been implemented");
+    t_input.clear(); // Temporary operation, to remove warnings for compilation log ;)
+    throw std::runtime_error("The function 'ZipArchive::Save' has not yet been implemented");
   }
 
   void ZipArchive::Print()
