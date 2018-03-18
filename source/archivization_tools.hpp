@@ -16,9 +16,14 @@
 
 namespace archive_management_tools
 {
+  using archive_management_tools::archives::Archive;
   using archive_management_tools::archives::ArchiveType;
   using archive_management_tools::archives::CompressionAlgorithm;
-  using archive_management_tools::archives::Archive;
+  using archive_management_tools::archives::zip::components::LocalFileHeader;
+  using archive_management_tools::archives::zip::components::ExtendedLocalHeader;
+  using archive_management_tools::archives::zip::components::CentralDirectory;
+  using archive_management_tools::archives::zip::components::EndOfCentralDirectory;
+  using archive_management_tools::archives::zip::ZipArchive;
 
   ArchiveType GetArchiveType(const std::string& t_file_path);
 
