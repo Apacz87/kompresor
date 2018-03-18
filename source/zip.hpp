@@ -12,12 +12,8 @@
 
 namespace archive_management_tools::archives::zip
 {
+  class ZipBuilder;
   using archive_management_tools::archives::Archive;
-  // Overall zipfile format:
-  // Byte order: Little-endian
-  // [Local file header + Compressed data [+ Extended local header]?]*
-  // [Central directory]*
-  // [End of central directory record]
 
   // compression method: (2 bytes)
   // 0 - The file is stored (no compression)
@@ -321,33 +317,64 @@ namespace archive_management_tools::archives::zip
   private:
     void* m_data_pointer;
     size_t m_data_size;
-    components::EndOfCentralDirectory* m_end_central_directory;
+    std::list<components::LocalFileHeader*> m_local_file_feader_list;
+    // TODO: Add ExtendedLocalHeader
     std::list<components::CentralDirectory*> m_central_directory_list;
+    components::EndOfCentralDirectory* m_end_central_directory;
+
     void* GetEndOfCentralDirectoryOffset();
+    ZipArchive() = default;
 
   public:
     friend class ZipBuilder;
+    static ZipBuilder Build();
     void Pack(std::string);
     void Unpack(std::string);
     void Save(std::string);
     void Print();
-    ZipArchive(void*, size_t);
   };
 
-  namespace build
+  class ZipBuilder
   {
-    class ZipBuilder
+  private:
+    ZipArchive m_zip;
+  public:
+    ZipBuilder() = default;
+    ZipBuilder& SetFilePointer(void* t_file_pointer)
     {
-    private:
-      ZipArchive m_zip;
-    public:
-      SetEndOfCentralDirectory();
-      AddCentralDirectory();
-      AddLocalHeader();
-      AddExtendedLocalHeader();
-      //operator ZipArchive&&() { }
-    };
-  } // namespace archive_management_tools::archives::zip::build
+      this->m_zip.m_data_pointer = t_file_pointer;
+      return *this;
+    }
+
+    ZipBuilder& SetFileSize(size_t t_file_size)
+    {
+      this->m_zip.m_data_size = t_file_size;
+      return *this;
+    }
+
+    ZipBuilder& SetEndOfCentralDirectory(components::EndOfCentralDirectory* t_eocd)
+    {
+      this->m_zip.m_end_central_directory = t_eocd;
+      return *this;
+    }
+
+    ZipBuilder& AddCentralDirectory(components::CentralDirectory* t_cd)
+    {
+      this->m_zip.m_central_directory_list.push_back(t_cd);
+      return *this;
+    }
+
+    ZipBuilder& AddLocalHeader(components::LocalFileHeader* t_lfh)
+    {
+      this->m_zip.m_local_file_feader_list.push_back(t_lfh);
+      return *this;
+    }
+    //ZipBuilder& AddExtendedLocalHeader();
+    operator ZipArchive&&()
+    {
+      return std::move(this->m_zip);
+    }
+  };
 } // namespace archive_management_tools::archives::zip
 
 #endif
