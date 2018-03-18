@@ -84,41 +84,6 @@ namespace archive_management_tools
     return nullptr;
   }
 
-  void MapZipIntoMemory(int fd)
-  {
-    struct stat file_stat;
-    if (fstat(fd, &file_stat))
-    {
-      throw std::runtime_error("Reading file stat failed!");
-    }
-
-    char *p = (char*) mmap(0, file_stat.st_size, PROT_READ, MAP_SHARED, fd, 0);
-    if (p == MAP_FAILED)
-    {
-      throw std::runtime_error("mmap file failed!");
-    }
-
-    //zip::LocalFileHeader* first_header = (zip::LocalFileHeader*)p;
-    //first_header->print();
-
-    /*for ( auto len = 0; len < file_stat.st_size; len++)
-    {
-      putchar(p[len]);
-    }*/
-    //zip::CentralDirectory* central_directory = (zip::CentralDirectory*) SearchForCentralDirectory(p, file_stat.st_size);
-
-    //central_directory->print_data();
-    //std::cout << '\n';
-
-    //zip::EndOfCentralDirectory* end_central_directory = (zip::EndOfCentralDirectory*) SearchForEndOfCentralDirectory(p, file_stat.st_size);
-    //end_central_directory->print_data();
-
-    if (munmap(p, file_stat.st_size) == -1)
-    {
-      throw std::runtime_error("munmap file failed!");
-    }
-  }
-
   void FileInfo(const std::string& t_file_path)
   {
     struct stat sb;
@@ -166,11 +131,6 @@ namespace archive_management_tools
     if (fd == -1)
     {
       throw std::runtime_error("open file failed!");
-    }
-
-    if (IsArchive(fd))
-    {
-      MapZipIntoMemory(fd);
     }
 
     if (close(fd) == -1)
