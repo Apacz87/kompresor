@@ -73,7 +73,8 @@ namespace archive_management_tools
     }
 
     //Archive Create(const std::string&);
-    //Archive Read(const std::string&);
+    static std::shared_ptr<Archive> Read(const int& t_file_descriptor);
+    static std::shared_ptr<Archive> Read(const std::string&);
   };
 } // namespace archive_management_tools
 

@@ -157,13 +157,48 @@ namespace archive_management_tools
 
   }
 
+  std::shared_ptr<Archive> ArchiveFactory::Read(const int& t_file_descriptor)
+  {
+    struct stat file_stat;
+    if (fstat(t_file_descriptor, &file_stat))
+    {
+      throw std::runtime_error("Reading file stat failed!");
+    }
+
+    char *p = (char*) mmap(0, file_stat.st_size, PROT_READ, MAP_SHARED, t_file_descriptor, 0);
+    if (p == MAP_FAILED)
+    {
+      throw std::runtime_error("mmap file failed!");
+    }
+
+    ZipArchive archive = ZipArchive::Build().SetEndOfCentralDirectory(ZipFileParser::GetEndOfCentralDirectory(p, file_stat.st_size));
+    if (munmap(p, file_stat.st_size) == -1)
+    {
+      throw std::runtime_error("munmap file failed!");
+    }
+
+    return archive.GetPointer();
+  }
+
+  std::shared_ptr<Archive> ArchiveFactory::Read(const std::string& t_archive_path)
+  {
+    int file_descriptor = open(t_archive_path.c_str(), O_RDONLY);
+    if (file_descriptor == -1)
+    {
+      throw std::runtime_error(std::strerror(errno));
+    }
+
+    auto archive = ArchiveFactory::Read(file_descriptor);
+    if (close(file_descriptor) == -1)
+    {
+      throw std::runtime_error(std::strerror(errno));
+    }
+
+    return archive;
+  }
+
   /*Archive ArchiveFactory::Create(const std::string& t_archive_path)
   {
     return Archive();
-  }
-
-  Archive ArchiveFactory::Read(const std::string& t_archive_path)
-  {
-
   }*/
 } // namespace archive_management_tools
