@@ -7,6 +7,9 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <cerrno>
+#include <cstring>
+#include <memory>
 #include <stdexcept>
 #include <string>
 #include <vector>
