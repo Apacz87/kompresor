@@ -2,6 +2,23 @@
 
 namespace archive_management_tools
 {
+  EndOfCentralDirectory* ZipFileParser::GetEndOfCentralDirectory(void* const t_data_pointer, const size_t& t_data_size)
+  {
+    unsigned int signature = 0x06054b50;
+    char* pointer = reinterpret_cast<char*>(t_data_pointer);
+    for (size_t i =  t_data_size - 176; i == 0x0; --i)
+    {
+      unsigned int* value = reinterpret_cast<unsigned int*>(pointer);
+      if (*value == signature)
+      {
+        return (EndOfCentralDirectory*)value;
+      }
+
+      pointer++;
+    }
+
+    return nullptr;
+  }
   bool IsArchive(int t_file_descriptor)
   {
     struct stat file_stat;

@@ -39,6 +39,12 @@ namespace archive_management_tools
 
   archive_management_tools::archives::zip::ZipArchive ReadZip(const std::string& t_path);
 
+  class ZipFileParser
+  {
+  public:
+    static EndOfCentralDirectory* GetEndOfCentralDirectory(void* const t_data_pointer, const size_t& t_data_size);
+  };
+
   class ArchiveFactory
   {
     ArchiveType m_archive_type;
