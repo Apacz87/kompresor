@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 {
   namespace amt = archive_management_tools;
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.12.0";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.13.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
@@ -92,17 +92,15 @@ int main(int argc, char* argv[])
         // TODO: Print info about files from input.
         for (auto file : input)
         {
-          // if (amt::IsArchive(file))
-          // {
-          //  amt::Archive archive = amt::ArchiveFactory.Read(file);
-          //  archive.PrintStat();
-          // }
-          // else
-          // {
-          //  amt::PrintFileStat(file);
-          // }
-          auto zip = amt::ReadZip(file);
-          zip.Print();
+          if (amt::IsArchive(file))
+          {
+            auto archive = amt::ArchiveFactory::Read(file);
+            archive->PrintFileStat();
+          }
+          else
+          {
+            amt::FileInfo(file);
+          }
         }
 
         break;
