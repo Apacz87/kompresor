@@ -23,8 +23,8 @@ namespace archive_management_tools::archives::zip
   class ZipArchive : public Archive
   {
   private:
-    void* m_data_pointer;
-    size_t m_data_size;
+    void* m_data_pointer = nullptr;
+    size_t m_data_size = 0;
     std::list<components::LocalFileHeader*> m_local_file_feader_list;
     // TODO: Add ExtendedLocalHeader
     std::list<components::CentralDirectory*> m_central_directory_list;
