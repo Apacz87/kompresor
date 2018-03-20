@@ -60,57 +60,65 @@ int main(int argc, char* argv[])
     }).doc("show version")
   );
 
-  // The command line parser.
-  if(clipp::parse(argc, argv, cli))
+  try
   {
-    switch(selected)
+    // The command line parser.
+    if(clipp::parse(argc, argv, cli))
     {
-      case Mode::COMPRESSION:
+      switch(selected)
       {
-        // TODO: Create zip file from input files.
-        // amt::Archive archive = amt::ArchiveFactory(settings);
-        // amt::Archive archive = amt::ArchiveFactory.Create(settings);
-        // archive.pack(input);
-        // archive.save(output)
-        break;
-      }
-      case Mode::DECOMPRESSION:
-      {
-        // TODO: Decompress archive files from input.
-        for (auto file : input)
+        case Mode::COMPRESSION:
         {
-          // amt::Archive archive = amt::ArchiveFactory(file);
-          // amt::Archive archive = amt::ArchiveFactory.Read(file);
-          // archive.unpack();
-          // archive.unpack(output);
+          // TODO: Create zip file from input files.
+          // amt::Archive archive = amt::ArchiveFactory(settings);
+          // amt::Archive archive = amt::ArchiveFactory.Create(settings);
+          // archive.pack(input);
+          // archive.save(output)
+          break;
         }
-
-        break;
-      }
-      case Mode::INFO:
-      {
-        // TODO: Print info about files from input.
-        for (auto file : input)
+        case Mode::DECOMPRESSION:
         {
-          if (amt::IsArchive(file))
+          // TODO: Decompress archive files from input.
+          for (auto file : input)
           {
-            auto archive = amt::ArchiveFactory::Read(file);
-            archive->PrintFileStat();
+            // amt::Archive archive = amt::ArchiveFactory(file);
+            // amt::Archive archive = amt::ArchiveFactory.Read(file);
+            // archive.unpack();
+            // archive.unpack(output);
           }
-          else
-          {
-            amt::FileInfo(file);
-          }
-        }
 
-        break;
+          break;
+        }
+        case Mode::INFO:
+        {
+          // TODO: Print info about files from input.
+          for (auto file : input)
+          {
+            if (amt::IsArchive(file))
+            {
+              auto archive = amt::ArchiveFactory::Read(file);
+              archive->PrintFileStat();
+            }
+            else
+            {
+              amt::FileInfo(file);
+            }
+          }
+
+          break;
+        }
+        case Mode::HELP: std::cout << clipp::make_man_page(cli, argv[0]); break;
       }
-      case Mode::HELP: std::cout << clipp::make_man_page(cli, argv[0]); break;
+    }
+    else
+    {
+      std::cout << clipp::usage_lines(cli, argv[0]) << '\n';
     }
   }
-  else
+  catch(const std::exception& excep)
   {
-    std::cout << clipp::usage_lines(cli, argv[0]) << '\n';
+    std::cerr << "An exception occurred, with message: " << excep.what() << '\n';
+    return 1;
   }
 
   return 0;
