@@ -280,6 +280,10 @@ namespace archive_management_tools::archives::zip::components
       return std::string(&ptr[22], this-> m_comment_length);
     }
 
+    EndOfCentralDirectory() = default;
+    EndOfCentralDirectory(const EndOfCentralDirectory&) = default;
+    EndOfCentralDirectory(EndOfCentralDirectory&&) = default;
+
     void print_data()
     {
       char* signature_ptr = (char*)&this->m_signature;
