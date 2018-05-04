@@ -88,23 +88,6 @@ namespace archive_management_tools
     return nullptr;
   }
 
-  void* SearchForEndOfCentralDirectory(void* t_pointer, size_t t_data_size)
-  {
-    char* ptr = (char*)t_pointer;
-    for (size_t i = 0; i < t_data_size; i++)
-    {
-      int* value = (int*) ptr;
-      if (*value == 0x06054b50)
-      {
-        return value;
-      }
-
-      ptr++;
-    }
-
-    return nullptr;
-  }
-
   void FileInfo(const std::string& t_file_path)
   {
     struct stat sb;
