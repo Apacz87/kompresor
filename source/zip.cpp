@@ -25,12 +25,6 @@ namespace archive_management_tools::archives::zip
     throw std::runtime_error("The function 'ZipArchive::Save' has not yet been implemented");
   }
 
-  void ZipArchive::Print()
-  {
-    this->m_end_central_directory->print_data();
-    this->m_central_directory_list.front()->print_data();
-  }
-
   ZipBuilder ZipArchive::Build()
   {
     return ZipBuilder();
