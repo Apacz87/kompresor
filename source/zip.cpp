@@ -4,7 +4,7 @@ namespace archive_management_tools::archives::zip
 {
   void ZipArchive::PrintFileStat()
   {
-    std::cout << "Still to do!\n";
+    this->m_end_central_directory->print_data();
   }
 
   void ZipArchive::Pack(std::string  t_input)
