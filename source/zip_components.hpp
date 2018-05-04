@@ -276,8 +276,8 @@ namespace archive_management_tools::archives::zip::components
     // Zipfile comment (Offset: 22, Lenght: (c) bytes)
     std::string get_comment()
     {
-      char* ptr = (char*)&this->m_signature;
-      return std::string(&ptr[22], this-> m_comment_length);
+      char* pointer = reinterpret_cast<char*>(this->m_signature);
+      return std::string(&pointer[22], this-> m_comment_length);
     }
 
     EndOfCentralDirectory() = default;
