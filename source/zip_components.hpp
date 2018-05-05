@@ -214,6 +214,12 @@ namespace archive_management_tools::archives::zip::components
       return this->get_extra_field_offset() + this->m_extra_field_length;
     }
 
+    // Returns the full size of the current struct instance.
+    size_t get_struct_full_size()
+    {
+      return sizeof(CentralDirectory) + this->m_file_name_lenght + this->m_extra_field_length + this->m_file_comment_length;
+    }
+
     void print_data()
     {
       char* signature_ptr = (char*)&this->m_signature;
