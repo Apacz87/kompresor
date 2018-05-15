@@ -164,13 +164,27 @@ namespace archive_management_tools
       throw std::runtime_error("mmap file failed!");
     }
 
-    ZipArchive archive = ZipArchive::Build().SetEndOfCentralDirectory(ZipFileParser::GetEndOfCentralDirectory(p, file_stat.st_size));
-    if (munmap(p, file_stat.st_size) == -1)
+    auto eocd = ZipFileParser::GetEndOfCentralDirectory(p, file_stat.st_size);
+    auto cdl =  ZipFileParser::GetCentralDirectoryList(p, eocd);
+    auto lfhl = ZipFileParser::GetLocalFileHeaderList(p, cdl);
+
+    std::shared_ptr<ZipArchive> archive = ZipArchive::Build().SetFilePointer(p)
+      .SetFileSize(file_stat.st_size)
+      .SetEndOfCentralDirectory(eocd)
+      .AddCentralDirectoryList(cdl)
+      .AddLocalHeaderList(lfhl);
+      //.AddCentralDirectory((CentralDirectory*)(p + eocd->m_start_offset));
+    //archive->PrintFileStat();
+    /*if (munmap(p, file_stat.st_size) == -1)
     {
       throw std::runtime_error("munmap file failed!");
-    }
+    }*/
 
-    return archive.GetPointer();
+    //auto test_ptr = archive->GetPointer();
+    //test_ptr->PrintFileStat();
+    //return test_ptr;
+
+    return archive;
   }
 
   std::shared_ptr<Archive> ArchiveFactory::Read(const std::string& t_archive_path)
