@@ -10,7 +10,7 @@ int main(int argc, char* argv[])
 {
   namespace amt = archive_management_tools;
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.14.0";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.15.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
