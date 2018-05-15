@@ -56,14 +56,14 @@ namespace archive_management_tools::archives::zip::components
     // Filename (Offset: 30, Lenght: (f) bytes)
     std::string get_file_name()
     {
-      char* pointer = reinterpret_cast<char*>(this->m_signature);
+      char* pointer = reinterpret_cast<char*>(&this->m_signature);
       return std::string(&pointer[30], this->m_file_name_lenght);
     }
 
     // Extra field (Offset: (30 + (f)), Lenght: (e) bytes)
     size_t get_extra_field_offset()
     {
-      char* pointer = reinterpret_cast<char*>(this->m_signature);
+      char* pointer = reinterpret_cast<char*>(&this->m_signature);
       return (size_t)&pointer[30 + this->m_file_name_lenght];
     }
 
@@ -73,7 +73,7 @@ namespace archive_management_tools::archives::zip::components
       return this->get_extra_field_offset() + this->m_extra_field_length;
     }
 
-    void print_data()
+    void print_file_data()
     {
       auto data = (unsigned char*)this->get_data_offset();
       for ( size_t i = 0, j = 0; i < this->m_compressed_size; i++, j++)
@@ -96,9 +96,9 @@ namespace archive_management_tools::archives::zip::components
     }
 
     // Print conntent from local file header
-    void print()
+    void print_data()
     {
-      char* signature_ptr = reinterpret_cast<char*>(this->m_signature);
+      char* signature_ptr = reinterpret_cast<char*>(&this->m_signature);
       std::cout << "Signature: " << signature_ptr[0] << signature_ptr[1] << " "
         << (int)signature_ptr[2] << " " << (int)signature_ptr[3] << '\n';
       std::cout << "Version: " << this->m_version <<  '\n';
@@ -116,7 +116,7 @@ namespace archive_management_tools::archives::zip::components
       std::cout << "Extra field offset: " << std::hex << this->get_extra_field_offset() << std::dec << '\n';
       std::cout << "Data field offset: " << std::hex << this->get_data_offset() << std::dec << '\n';
       std::cout << "Data:\n";
-      this->print_data();
+      this->print_file_data();
     }
   };
   #pragma pack(pop)
@@ -287,8 +287,14 @@ namespace archive_management_tools::archives::zip::components
     }
 
     EndOfCentralDirectory() = default;
-    EndOfCentralDirectory(const EndOfCentralDirectory&) = default;
-    EndOfCentralDirectory(EndOfCentralDirectory&&) = default;
+    EndOfCentralDirectory(const EndOfCentralDirectory&) = delete;
+    EndOfCentralDirectory(EndOfCentralDirectory&&) = delete;
+
+    // Returns the full size of the current struct instance.
+    size_t get_struct_full_size()
+    {
+      return 0x16 + this->m_comment_length;
+    }
 
     void print_data()
     {
