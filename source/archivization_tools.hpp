@@ -47,6 +47,8 @@ namespace archive_management_tools
   {
   public:
     static EndOfCentralDirectory* GetEndOfCentralDirectory(void* const t_data_pointer, const size_t& t_data_size);
+    static std::list<CentralDirectory*> GetCentralDirectoryList(void* const t_data_pointer, const EndOfCentralDirectory* eocd_pointer);
+    static std::list<LocalFileHeader*> GetLocalFileHeaderList(void* const t_data_pointer, const std::list<CentralDirectory*>& t_cdir_list);
   };
 
   class ArchiveFactory

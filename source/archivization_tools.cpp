@@ -2,7 +2,6 @@
 
 namespace archive_management_tools
 {
-
   EndOfCentralDirectory* ZipFileParser::GetEndOfCentralDirectory(void* const t_data_pointer, const size_t& t_data_size)
   {
     const unsigned int signature = 0x06054b50;
@@ -21,6 +20,30 @@ namespace archive_management_tools
     }
 
     return nullptr;
+  }
+
+  std::list<CentralDirectory*> ZipFileParser::GetCentralDirectoryList(void* const t_data_pointer, const EndOfCentralDirectory* t_eocd_pointer)
+  {
+    CentralDirectory* c_dir = (CentralDirectory*)(t_data_pointer + t_eocd_pointer->m_start_offset);
+    std::list<CentralDirectory*> cdir_list;
+    for (int entries = 1; entries <= t_eocd_pointer->m_number_of_entries_on_this_disk; entries++)
+    {
+      cdir_list.push_back(c_dir);
+      c_dir = (CentralDirectory*)(((char*)c_dir)+c_dir->get_struct_full_size());
+    }
+
+    return cdir_list;
+  }
+
+  std::list<LocalFileHeader*> ZipFileParser::GetLocalFileHeaderList(void* const t_data_pointer, const std::list<CentralDirectory*>& t_cdir_list)
+  {
+    std::list<LocalFileHeader*> lfh_list;
+    for (auto central_directory : t_cdir_list)
+    {
+      lfh_list.push_back((LocalFileHeader*)(t_data_pointer + central_directory->m_relative_offset_of_local_header));
+    }
+
+    return lfh_list;
   }
 
   bool IsArchive(int t_file_descriptor)
@@ -69,23 +92,6 @@ namespace archive_management_tools
   {
     t_file_path.c_str(); // Temporary operation, to remove warnings for compilation log ;)
     return ArchiveType::UNKNOWN;
-  }
-
-  void* SearchForCentralDirectory(void* t_pointer, size_t t_data_size)
-  {
-    char* ptr = (char*)t_pointer;
-    for (size_t i = 0; i < t_data_size; i++)
-    {
-      int* value = (int*) ptr;
-      if (*value == 0x02014b50)
-      {
-        return value;
-      }
-
-      ptr++;
-    }
-
-    return nullptr;
   }
 
   void FileInfo(const std::string& t_file_path)
