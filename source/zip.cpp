@@ -5,6 +5,15 @@ namespace archive_management_tools::archives::zip
   void ZipArchive::PrintFileStat()
   {
     this->m_end_central_directory->print_data();
+    for (auto central_directory : this->m_central_directory_list)
+    {
+      central_directory->print_data();
+    }
+
+    for (auto local_file_feader : this->m_local_file_header_list)
+    {
+      local_file_feader->print_data();
+    }
   }
 
   void ZipArchive::Pack(std::string  t_input)
