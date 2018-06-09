@@ -16,6 +16,17 @@ namespace archive_management_tools::archives::zip
     }
   }
 
+  std::list<std::string> ZipArchive::GetFileList()
+  {
+    std::list<std::string> result;
+    for (auto local_file_feader : this->m_local_file_header_list)
+    {
+      result.push_back(local_file_feader->get_file_name());
+    }
+
+    return result;
+  }
+
   void ZipArchive::Pack(std::string  t_input)
   {
     t_input.clear(); // Temporary operation, to remove warnings for compilation log ;)

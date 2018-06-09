@@ -38,6 +38,7 @@ namespace archive_management_tools::archives::zip
     void Pack(std::string);
     void Unpack(std::string);
     void Save(std::string);
+    std::list<std::string> GetFileList();
   };
 
   class ZipBuilder

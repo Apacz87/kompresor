@@ -1,6 +1,7 @@
 #ifndef ARCHIVE_HPP
 #define ARCHIVE_HPP
 
+#include <list>
 #include <string>
 #include <memory>
 
@@ -24,6 +25,7 @@ namespace archive_management_tools::archives
     virtual void Pack(std::string) = 0;
     virtual void Unpack(std::string) = 0;
     virtual void Save(std::string) = 0;
+    virtual std::list<std::string> GetFileList() = 0;
   };
 } // namespace archive_management_tools::archives
 
