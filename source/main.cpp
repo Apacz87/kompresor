@@ -98,6 +98,10 @@ int main(int argc, char* argv[])
             {
               auto archive = amt::ArchiveFactory::Read(file);
               archive->PrintFileStat();
+              /*for (auto file : archive->GetFileList())
+              {
+                std::cout << "File: " << file << '\n';
+              }*/
             }
             else
             {

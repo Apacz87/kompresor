@@ -5,16 +5,85 @@
 
 namespace archive_management_tools::archives::zip::components
 {
-  // compression method: (2 bytes)
-  // 0 - The file is stored (no compression)
-  // 1 - The file is Shrunk
-  // 2 - The file is Reduced with compression factor 1
-  // 3 - The file is Reduced with compression factor 2
-  // 4 - The file is Reduced with compression factor 3
-  // 5 - The file is Reduced with compression factor 4
-  // 6 - The file is Imploded
-  // 7 - Reserved for Tokenizing compression algorithm
-  // 8 - The file is Deflated
+  // Compression method
+  enum CompressionMethod
+  {
+    STORED = 0,
+    SHRUNK = 1,
+    REDUCE1 = 2,
+    REDUCE2 = 3,
+    REDUCE3 = 4,
+    REDUCE4 = 5,
+    IMPLODE = 6,
+    TOKENIZING_ALGORITHM = 7,
+    DEFLATE = 8,
+    DEFLATE64 = 9,
+    PKWARE_IMPLODE = 10,
+    VALUE_RESERVED_1 = 11,
+    BZIP2 = 12,
+    VALUE_RESERVED_2 = 13,
+    LZMA = 14,
+    VALUE_RESERVED_3 = 15,
+    VALUE_RESERVED_4 = 16,
+    VALUE_RESERVED_5 = 17,
+    IBM_TERSE = 18,
+    IBM_LZ77 = 19,
+    WAVPACK = 97,
+    PPMD = 98
+  };
+
+  union GeneralPurposeBitGlag
+  {
+    uint16_t m_value;
+
+    struct
+    {
+      // Indicates that the file is encrypted.
+      uint16_t is_file_encrypted : 1;
+      uint16_t field1 : 1;
+      uint16_t field2 : 1;
+      uint16_t field3 : 1;
+      uint16_t enhance_deflating : 1;
+      uint16_t compressed_patched_data : 1;
+      uint16_t strong_encryption : 1;
+      uint16_t Unused : 4;
+      uint16_t encoding_utf8 : 1;
+      uint16_t reserved0 : 1;
+      uint16_t encrypting_central_directory : 1;
+      uint16_t reserved1 : 2;
+    } m_bits;
+  };
+
+  union MsTime
+  {
+    uint16_t m_time;
+
+    struct
+    {
+      // Bits 00-04: seconds divided by 2
+      uint16_t m_seconds : 5;
+      // Bits 05-10: minutes
+      uint16_t m_minutes : 6;
+      // Bits 11-15: hours
+      uint16_t m_hours : 5;
+    } m_fields;
+
+  };
+
+  union MsDate
+  {
+    uint16_t m_date;
+
+    struct
+    {
+      // Bits 00-04: days
+      uint16_t m_days : 5;
+      // Bits 05-08: months
+      uint16_t m_months : 4;
+      // Bits 09-15: years from 1980
+      uint16_t m_years : 7;
+    } m_fields;
+  };
 
   // The local file header
   #pragma pack(push, 1)
@@ -27,16 +96,16 @@ namespace archive_management_tools::archives::zip::components
     uint16_t m_version;
 
     // General purpose bit flag (Offset: 6, Lenght: 2 bytes)
-    uint16_t m_bit_flag;
+    GeneralPurposeBitGlag m_bit_flag;
 
     // Compression method (Offset: 8, Lenght: 2 bytes)
     uint16_t m_compression_method;
 
-    // Last mod file time (Offset: 10, Lenght: 2 bytes)
-    uint16_t m_last_mod_time;
+    // Last mod file time stored in standard MS-DOS format (Offset: 10, Lenght: 2 bytes)
+    MsTime m_last_mod_time;
 
-    // Last mod file date (Offset: 12, Lenght: 2 bytes)
-    uint16_t m_last_mod_date;
+    // Last mod file date stored in standard MS-DOS format (Offset: 12, Lenght: 2 bytes)
+    MsDate m_last_mod_date;
 
     // CRC-32 (Offset: 14, Lenght: 4 bytes)
     uint32_t m_crc;
@@ -102,10 +171,15 @@ namespace archive_management_tools::archives::zip::components
       std::cout << "Signature: " << signature_ptr[0] << signature_ptr[1] << " "
         << (int)signature_ptr[2] << " " << (int)signature_ptr[3] << '\n';
       std::cout << "Version: " << this->m_version <<  '\n';
-      std::cout << "Bit flag: " << std::hex << this->m_bit_flag << '\n';
+      std::cout << "Bit flag: " << std::hex << this->m_bit_flag.m_value << '\n';
       std::cout << "Compression method: " << this->m_compression_method << '\n';
-      std::cout << "Last mod time:"<< std::hex << this->m_last_mod_time << '\n';
-      std::cout << "Last mod date:"<< std::hex << this->m_last_mod_date << '\n';
+      std::cout << "Last mod time:"<< std::hex << this->m_last_mod_time.m_time << '\n';
+      std::cout << "Last mod file time: " << std::dec << this->m_last_mod_time.m_fields.m_hours << ' '
+      << this->m_last_mod_time.m_fields.m_minutes << ' ' << this->m_last_mod_time.m_fields.m_seconds * 2<< '\n';
+      std::cout << "Last mod file date: " << std::hex << this->m_last_mod_date.m_date << '\n';
+      std::cout << "Last mod date:"<< std::hex << this->m_last_mod_date.m_date << '\n';
+      std::cout << "Last mod date:"<< std::dec << this->m_last_mod_date.m_fields.m_days <<
+      ' ' << this->m_last_mod_date.m_fields.m_months << ' ' << this->m_last_mod_date.m_fields.m_years + 1980 << '\n';
       std::cout << "CRC-32: " << std::hex << this->m_crc << '\n';
       std::cout << "Compressed size: " << std::dec << this->m_compressed_size << " bytes\n";
       std::cout << "Uncompressed size: " << this->m_uncompressed_size << " bytes\n";
@@ -153,16 +227,16 @@ namespace archive_management_tools::archives::zip::components
     uint16_t m_version_to_extract;
 
     // General purpose bit flag (Offset: 8, Lenght: 2 bytes)
-    uint16_t m_bit_flag;
+    GeneralPurposeBitGlag m_bit_flag;
 
     // Compression method (Offset: 10, Lenght: 2 bytes)
     uint16_t m_compression_method;
 
-    // Last mod file time (Offset: 12, Lenght: 2 bytes)
-    uint16_t m_last_mod_time;
+    // Last mod file time stored in standard MS-DOS format (Offset: 12, Lenght: 2 bytes)
+    MsTime m_last_mod_time;
 
-    // Last mod file date (Offset: 14, Lenght: 2 bytes)
-    uint16_t m_last_mod_date;
+    // Last mod file date stored in standard MS-DOS format (Offset: 14, Lenght: 2 bytes)
+    MsDate m_last_mod_date;
 
     // CRC-32 (Offset: 16, Lenght: 4 bytes)
     uint32_t m_crc;
@@ -228,10 +302,12 @@ namespace archive_management_tools::archives::zip::components
       //std::cout << "Central directory signature: " << this->m_signature << '\n';
       std::cout << "Made by version: " << this->m_version_mady_by << '\n';
       std::cout << "Version needed to extract: " << this->m_version_to_extract << '\n';
-      std::cout << "Bit Flag: " << std::hex << this->m_bit_flag << '\n';
+      std::cout << "Bit Flag: " << std::hex << this->m_bit_flag.m_value << '\n';
       std::cout << "Compression method: " << this->m_compression_method << '\n';
-      std::cout << "Last mod file time: " << this->m_last_mod_time << '\n';
-      std::cout << "Last mod file date: " << this->m_last_mod_date << '\n';
+      std::cout << "Last mod file time: " << this->m_last_mod_time.m_time << '\n';
+      std::cout << "Last mod file time: " << this->m_last_mod_time.m_fields.m_hours << ' '
+      << this->m_last_mod_time.m_fields.m_minutes << ' ' << this->m_last_mod_time.m_fields.m_seconds << '\n';
+      std::cout << "Last mod file date: " << this->m_last_mod_date.m_date << '\n';
       std::cout << "CRC-32: " << this->m_crc << '\n';
       std::cout << "Compressed size: " << std::dec << this->m_compressed_size << " bytes\n";
       std::cout << "Uncompressed size: " << this->m_uncompressed_size << " bytes\n";
