@@ -5,12 +5,13 @@
 #include "archivization_tools.hpp"
 #include "clipp.h"
 #include "zip.hpp"
+#include "debug_utils.h"
 
 int main(int argc, char* argv[])
 {
   namespace amt = archive_management_tools;
   // The current version of application.
-  const std::string ApplicationVersion = "0.0.0-alpha.0.0.0-prototype-0.1.0";
+  const std::string ApplicationVersion = "0.0.0-alpha.0.0.0-prototype-0.2.0";
 
   // The application running mode.
   enum class Mode {COMPRESSION, DECOMPRESSION, INFO, HELP};
@@ -69,6 +70,7 @@ int main(int argc, char* argv[])
       {
         case Mode::COMPRESSION:
         {
+          debug_log("COMPRESSION MODE");
           // TODO: Create zip file from input files.
           // amt::Archive archive = amt::ArchiveFactory(settings);
           // amt::Archive archive = amt::ArchiveFactory.Create(settings);
@@ -78,6 +80,7 @@ int main(int argc, char* argv[])
         }
         case Mode::DECOMPRESSION:
         {
+          debug_log("DECOMPRESSION MODE");
           // TODO: Decompress archive files from input.
           for (auto file : input)
           {
@@ -91,21 +94,23 @@ int main(int argc, char* argv[])
         }
         case Mode::INFO:
         {
+          debug_log("INFO MODE");
           // TODO: Print info about files from input.
           for (auto file : input)
           {
             if (amt::IsArchive(file))
             {
               auto archive = amt::ArchiveFactory::Read(file);
-              archive->PrintFileStat();
+              //archive->PrintFileStat();
               /*for (auto file : archive->GetFileList())
               {
                 std::cout << "File: " << file << '\n';
               }*/
+              std::cout << archive->FileStat() << '\n';
             }
             else
             {
-              amt::FileInfo(file);
+              std::cout << amt::FileInfo(file) << '\n';
             }
           }
 

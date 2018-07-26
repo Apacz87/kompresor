@@ -12,6 +12,7 @@
 #include <memory>
 #include <stdexcept>
 #include <string>
+#include <sstream>
 #include <vector>
 
 #include "archive.hpp"
@@ -39,7 +40,7 @@ namespace archive_management_tools
 
   void MapZipIntoMemory(int);
 
-  void FileInfo(const std::string&);
+  std::string FileInfo(const std::string&);
 
   archive_management_tools::archives::zip::ZipArchive ReadZip(const std::string& t_path);
 

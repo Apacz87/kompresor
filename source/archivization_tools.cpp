@@ -94,60 +94,46 @@ namespace archive_management_tools
     return ArchiveType::UNKNOWN;
   }
 
-  void FileInfo(const std::string& t_file_path)
+  std::string FileInfo(const std::string& t_file_path)
   {
     struct stat sb;
-    int ret, fd;
+    std::basic_stringstream<char> output;
 
-    ret = stat(t_file_path.c_str(), &sb);
-    if (ret)
+    if (stat(t_file_path.c_str(), &sb))
     {
-      //perror("stat");
       throw std::runtime_error("stat error!");
     }
 
-    std::cout << "--------------------------------------------------------------" << '\n';
-    std::cout << "FILE: " << t_file_path << '\n';
-    std::cout << "SIZE: " << sb.st_size << " bytes, TYPE: ";
     switch (sb.st_mode & S_IFMT)
     {
       case S_IFBLK:
-        std::cout << "block device\n";// wezel urzadzenia blokowego
+        output << "[BLOCK DEVICE]";
         break;
       case S_IFCHR:
-        std::cout << "character device\n";// wezel urzadzenia znakowego
+        output << "[CHARACTER DEVICE]";
         break;
       case S_IFDIR:
-        std::cout << "directory\n";
+        output << "[DIRECTORY]";
         break;
       case S_IFIFO:
-        std::cout << "FIFO/pipe\n";// kolejka FIFO
+        output << "[FIFO/PIPE]";
         break;
       case S_IFLNK:
-        std::cout << "symlink\n";// dowiazanie symboliczne
+        output << "[SYMLINK]";
         break;
       case S_IFREG:
-        std::cout << "regular file\n";
+        output << "[REGULAR FILE]";
         break;
       case S_IFSOCK:
-        std::cout << "socket\n";// gniazdo
+        output << "[SOCKET]";
         break;
       default:
-        std::cout << "unknown?\n";
+        output << "[UNKNOWN]";
         break;
     }
 
-    fd = open(t_file_path.c_str(), O_RDONLY);
-    if (fd == -1)
-    {
-      throw std::runtime_error("open file failed!");
-    }
-
-    if (close(fd) == -1)
-    {
-      throw std::runtime_error("close failed!");
-    }
-
+    output << " \"" << t_file_path << "\" " << sb.st_size << " bytes\n";
+    return output.str();
   }
 
   std::shared_ptr<Archive> ArchiveFactory::Read(const int& t_file_descriptor)

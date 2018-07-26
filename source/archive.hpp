@@ -22,6 +22,7 @@ namespace archive_management_tools::archives
         return shared_from_this();
     }
     virtual void PrintFileStat() = 0;
+    virtual std::string FileStat() = 0;
     virtual void Pack(std::string) = 0;
     virtual void Unpack(std::string) = 0;
     virtual void Save(std::string) = 0;

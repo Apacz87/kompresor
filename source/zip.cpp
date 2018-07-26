@@ -2,6 +2,23 @@
 
 namespace archive_management_tools::archives::zip
 {
+  std::string ZipArchive::FileStat()
+  {
+    std::basic_stringstream<char> output;
+    output << "[ARCHIVE] ZIP: entries = " <<
+     this->m_end_central_directory->m_number_of_entries << "\n";
+
+    if (this->m_end_central_directory->m_number_of_entries > 0) {
+      for (auto local_file_feader : this->m_local_file_header_list) {
+        output << "\t" << local_file_feader->get_file_name() << " (" <<
+        local_file_feader->m_compressed_size << "/" <<
+        local_file_feader->m_uncompressed_size << ") bytes\n";
+      }
+    }
+
+    return output.str();
+  }
+
   void ZipArchive::PrintFileStat()
   {
     this->m_end_central_directory->print_data();

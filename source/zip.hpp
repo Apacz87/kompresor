@@ -7,9 +7,11 @@
 #include <iostream>
 #include <list>
 #include <string>
+#include <sstream>
 
 #include "archive.hpp"
 #include "zip_components.hpp"
+#include "debug_utils.h"
 
 namespace archive_management_tools::archives::zip
 {
@@ -34,6 +36,7 @@ namespace archive_management_tools::archives::zip
     friend class ZipBuilder;
     ZipArchive() = default;
     static ZipBuilder Build();
+    std::string FileStat();
     void PrintFileStat();
     void Pack(std::string);
     void Unpack(std::string);
@@ -53,49 +56,49 @@ namespace archive_management_tools::archives::zip
       {
         this->m_zip = std::make_shared<ZipArchive>();
       }
-      std::cout << "DEBUG: SetFilePointer()...\n";
+      debug_log("SetFilePointer()");
       this->m_zip->m_data_pointer = t_file_pointer;
       return *this;
     }
 
     ZipBuilder& SetFileSize(size_t t_file_size)
     {
-      std::cout << "DEBUG: SetFileSize()...\n";
+      debug_log("SetFileSize()");
       this->m_zip->m_data_size = t_file_size;
       return *this;
     }
 
     ZipBuilder& SetEndOfCentralDirectory(components::EndOfCentralDirectory* t_eocd)
     {
-      std::cout << "DEBUG: SetEndOfCentralDirectory()...\n";
+      debug_log("SetEndOfCentralDirectory()");
       this->m_zip->m_end_central_directory = t_eocd;
       return *this;
     }
 
     ZipBuilder& AddCentralDirectory(components::CentralDirectory* t_cd)
     {
-      std::cout << "DEBUG: AddCentralDirectory()...\n";
+      debug_log("AddCentralDirectory()");
       this->m_zip->m_central_directory_list.push_back(t_cd);
       return *this;
     }
 
     ZipBuilder& AddCentralDirectoryList(std::list<components::CentralDirectory*> t_cdl)
     {
-      std::cout << "DEBUG: AddCentralDirectoryList()...\n";
+      debug_log("AddCentralDirectoryList()");
       this->m_zip->m_central_directory_list = t_cdl;
       return *this;
     }
 
     ZipBuilder& AddLocalHeader(components::LocalFileHeader* t_lfh)
     {
-      std::cout << "DEBUG: AddLocalHeader()...\n";
+      debug_log("AddLocalHeader()");
       this->m_zip->m_local_file_header_list.push_back(t_lfh);
       return *this;
     }
 
     ZipBuilder& AddLocalHeaderList(std::list<components::LocalFileHeader*> t_lfhl)
     {
-      std::cout << "DEBUG: AddLocalHeaderList()...\n";
+      debug_log("AddLocalHeaderList()");
       this->m_zip->m_local_file_header_list = t_lfhl;
       return *this;
     }
@@ -103,7 +106,7 @@ namespace archive_management_tools::archives::zip
     //ZipBuilder& AddExtendedLocalHeader();
     operator std::shared_ptr<ZipArchive>&&()
     {
-      std::cout << "DEBUG: RETURN POINTER()...\n";
+      debug_log("RETURN POINTER()");
       return std::move(this->m_zip);
     }
   };
