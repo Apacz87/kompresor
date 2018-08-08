@@ -5,7 +5,7 @@ namespace archive_management_tools::archives::zip
   std::string ZipArchive::FileStat()
   {
     std::basic_stringstream<char> output;
-    output << "[ARCHIVE] ZIP: entries = " <<
+    output << "(ZIP): entries = " <<
      this->m_end_central_directory->m_number_of_entries << "\n";
 
     if (this->m_end_central_directory->m_number_of_entries > 0) {

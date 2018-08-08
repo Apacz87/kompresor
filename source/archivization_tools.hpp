@@ -29,20 +29,12 @@ namespace archive_management_tools
   using archive_management_tools::archives::zip::components::EndOfCentralDirectory;
   using archive_management_tools::archives::zip::ZipArchive;
 
-  ArchiveType GetArchiveType(const std::string& t_file_path);
+  ArchiveType GetArchiveType(std::string const& t_file_path);
 
-  bool IsArchive(int);
-  bool IsArchive(std::string);
-
-  void* SearchForCentralDirectory(void*, size_t);
-
-  void* SearchForEndOfCentralDirectory(void*, size_t);
-
-  void MapZipIntoMemory(int);
-
+  bool IsArchive(const int&);
+  bool IsArchive(const std::string&);
+  bool FileExist(std::string t_file_path);
   std::string FileInfo(const std::string&);
-
-  archive_management_tools::archives::zip::ZipArchive ReadZip(const std::string& t_path);
 
   class ZipFileParser
   {

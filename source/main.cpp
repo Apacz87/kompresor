@@ -9,6 +9,8 @@
 
 int main(int argc, char* argv[])
 {
+  debug_log("Enter main function");
+  // Use archive_management_tools namespace as amt
   namespace amt = archive_management_tools;
   // The current version of application.
   const std::string ApplicationVersion = "0.0.0-alpha.0.0.0-prototype-0.2.0";
@@ -95,22 +97,26 @@ int main(int argc, char* argv[])
         case Mode::INFO:
         {
           debug_log("INFO MODE");
-          // TODO: Print info about files from input.
           for (auto file : input)
           {
-            if (amt::IsArchive(file))
-            {
-              auto archive = amt::ArchiveFactory::Read(file);
-              //archive->PrintFileStat();
-              /*for (auto file : archive->GetFileList())
+            // TODO: replace with std::filesystem::exists() when filesystem will
+            // be supported by compiler
+            if (amt::FileExist(file)) {
+              if (amt::IsArchive(file))
               {
-                std::cout << "File: " << file << '\n';
-              }*/
-              std::cout << archive->FileStat() << '\n';
+                auto archive = amt::ArchiveFactory::Read(file);
+                std::cout << "[ARCHIVE] " << file << " " << archive->FileStat() << '\n';
+                #ifdef DEBUG
+                archive->PrintFileStat();
+                #endif
+              }
+              else
+              {
+                std::cout << amt::FileInfo(file) << "\n\n";
+              }
             }
-            else
-            {
-              std::cout << amt::FileInfo(file) << '\n';
+            else {
+              std::cerr << "[ERROR] file \"" << file << "\" does not exist!\n\n";
             }
           }
 
@@ -130,5 +136,6 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+  debug_log("Proper exit");
   return 0;
 }

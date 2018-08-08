@@ -2,6 +2,11 @@
 
 namespace archive_management_tools
 {
+  bool FileExist(std::string t_file_path) {
+    struct stat sb;
+    return (stat(t_file_path.c_str(), &sb) == 0);
+  }
+
   EndOfCentralDirectory* ZipFileParser::GetEndOfCentralDirectory(void* const t_data_pointer, const size_t& t_data_size)
   {
     const unsigned int signature = 0x06054b50;
@@ -46,7 +51,7 @@ namespace archive_management_tools
     return lfh_list;
   }
 
-  bool IsArchive(int t_file_descriptor)
+  bool IsArchive(const int& t_file_descriptor)
   {
     struct stat file_stat;
     if (fstat(t_file_descriptor, &file_stat))
@@ -71,7 +76,7 @@ namespace archive_management_tools
     return false;
   }
 
-  bool IsArchive(std::string t_path)
+  bool IsArchive(const std::string& t_path)
   {
     int file_descriptor = open(t_path.c_str(), O_RDONLY);
     if (file_descriptor == -1)
@@ -132,7 +137,7 @@ namespace archive_management_tools
         break;
     }
 
-    output << " \"" << t_file_path << "\" " << sb.st_size << " bytes\n";
+    output << " \"" << t_file_path << "\" " << sb.st_size << " bytes";
     return output.str();
   }
 

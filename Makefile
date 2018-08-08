@@ -3,7 +3,7 @@ TARGET = kompresor
 SOURCEDIR = source
 CLIPPDIR = -I external/clipp/include/
 CXX = g++
-CXXFLAGS = -Wall -Wextra -pedantic -std=c++17 -O0
+CXXFLAGS = -Wall -Wextra -pedantic -std=gnu++17 -O0
 RM = rm -f
 SOURCEFILES = zip.cpp archivization_tools.cpp
 OBJECTS = $(subst .cpp,.o,$(SOURCEFILES))
