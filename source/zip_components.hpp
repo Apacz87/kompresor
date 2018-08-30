@@ -294,6 +294,17 @@ namespace archive_management_tools::archives::zip::components
       return sizeof(CentralDirectory) + this->m_file_name_lenght + this->m_extra_field_length + this->m_file_comment_length;
     }
 
+    bool is_directory()
+    {
+      if (this->get_file_name().back() != '/') {
+        if ((this->m_external_file_attributes & 0x10) != 0)
+          return true;
+        return false;
+      }
+
+      return true;
+    }
+
     void print_data()
     {
       char* signature_ptr = (char*)&this->m_signature;
@@ -318,7 +329,8 @@ namespace archive_management_tools::archives::zip::components
       std::cout << "Internal file attributes: " << this->m_internal_file_attributes << '\n';
       std::cout << "External file attributes: " << this->m_external_file_attributes << '\n';
       std::cout << "Relative offset of local header: " << this->m_relative_offset_of_local_header << '\n';
-      std::cout << "File name: " << this->get_file_name() << std::endl;
+      std::cout << "File name: " << this->get_file_name() << " (Is Directory = "
+       << std::boolalpha << this->is_directory()<< ")" << std::endl;
       if (this->m_file_comment_length > 0)
       {
         std::cout << "Comment: " << std::string(this->get_comment_offset(), this->m_file_comment_length) << std::endl;
