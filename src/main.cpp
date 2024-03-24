@@ -7,6 +7,7 @@
 
 int main(int argc, char *argv[]) {
 	bool verbose = false;
+	std::vector<std::string> wrong;
 	std::vector<std::string> input;
 	std::string output;
 
@@ -39,7 +40,8 @@ int main(int argc, char *argv[]) {
 		 .doc("Enables verbose output with additional details"),
 	     clipp::option("--version")
 		 .call([] { std::cout << "Version: " << PROJECT_VERSION << "\n\n"; })
-		 .doc("Print version information"));
+		 .doc("Print version information"),
+	     clipp::any_other(wrong));
 
 	if (clipp::parse(argc, argv, cli)) {
 		switch (selected) {
@@ -54,7 +56,9 @@ int main(int argc, char *argv[]) {
 			break;
 		}
 	} else {
-		std::cout << clipp::usage_lines(cli, argv[0]) << '\n';
+		std::cout << "Usage:" << clipp::usage_lines(cli, argv[0]) << '\n';
+		for (const auto &arg : wrong)
+			std::cout << "'" << arg << "' is not a valid argument!\n";
 	}
 
 	return 0;

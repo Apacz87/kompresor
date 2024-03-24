@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.1...3.28)
 
 project(
 	kompresor
-	VERSION "0.0.0.1"
+	VERSION "0.0.0.2"
 	LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
